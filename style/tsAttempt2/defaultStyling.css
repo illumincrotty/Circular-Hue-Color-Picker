@@ -1,0 +1,34 @@
+@font-face {
+	font-family: Atkinson-Hyperlegible;
+	src: url("../../fonts/WOFF2/Atkinson-Hyperlegible-Regular.woff2")
+			format("woff2"),
+		url("../../fonts/WOFF2/Atkinson-Hyperlegible-regular.WOFF")
+			format("woff");
+}
+
+:root {
+	font-family: Atkinson-Hyperlegible;
+
+	--slate: hsl(210, 30%, 30%);
+	--darkSlate: hsl(210, 30%, 10%);
+	--brightPurple: hsl(271, 100%, 62%);
+	--brightBlue: hsl(210, 100%, 62%);
+
+	--Main: var(--darkSlate);
+	--Secondary: var(--slate);
+	--Accent: var(--brightPurple);
+	--SecondaryAccent: var(--brightBlue);
+	--text-color: whitesmoke;
+
+	color: var(--text-color);
+	line-height: 1.5;
+}
+
+body {
+	background-color: var(--Secondary);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	width: 100%;
+}

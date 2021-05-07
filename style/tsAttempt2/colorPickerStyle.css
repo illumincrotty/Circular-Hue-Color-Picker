@@ -1,0 +1,107 @@
+:root {
+	--slate: hsl(210, 30%, 30%);
+	--darkSlate: hsl(210, 30%, 10%);
+	--brightPurple: hsl(271, 100%, 62%);
+	--brightBlue: hsl(210, 100%, 62%);
+
+	--Main: var(--darkSlate);
+	--Secondary: var(--slate);
+	--Accent: var(--brightPurple);
+	--SecondaryAccent: var(--brightBlue);
+	--text-color: whitesmoke;
+
+	color: var(--text-color);
+	line-height: 1.5;
+}
+
+.colorPicker-component {
+	--colorPicker-width: 15rem;
+	--selectedColor: hsl(0, 0%, 50%);
+	background-color: var(--Main);
+	width: var(--colorPicker-width);
+	padding: 1rem;
+}
+
+.colorPicker-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.colorPicker-colorWheel {
+	--radialFirstOpacity: 100%;
+	--radialSecondOpacity: 0%;
+	--lightness: 50%;
+	--colorWheelWidth: calc(var(--colorPicker-width) * 0.9);
+
+	position: relative;
+	cursor: pointer;
+
+	border-radius: 50%;
+	border: calc(var(--colorWheelWidth) * 0.05) solid var(--Secondary);
+
+	width: var(--colorWheelWidth);
+	height: var(--colorWheelWidth);
+
+	--displaySaturation: 100%;
+	background: radial-gradient(
+			circle closest-side,
+			hsla(0, 0%, var(--lightness), var(--radialFirstOpacity)),
+			hsla(0, 0%, 50%, var(--radialSecondOpacity))
+		),
+		conic-gradient(
+			hsl(0, var(--displaySaturation), var(--lightness)),
+			hsl(30, var(--displaySaturation), var(--lightness)),
+			hsl(60, var(--displaySaturation), var(--lightness)),
+			hsl(90, var(--displaySaturation), var(--lightness)),
+			hsl(120, var(--displaySaturation), var(--lightness)),
+			hsl(150, var(--displaySaturation), var(--lightness)),
+			hsl(180, var(--displaySaturation), var(--lightness)),
+			hsl(210, var(--displaySaturation), var(--lightness)),
+			hsl(240, var(--displaySaturation), var(--lightness)),
+			hsl(270, var(--displaySaturation), var(--lightness)),
+			hsl(300, var(--displaySaturation), var(--lightness)),
+			hsl(330, var(--displaySaturation), var(--lightness)),
+			hsl(360, var(--displaySaturation), var(--lightness))
+		);
+
+	filter: brightness(100%);
+}
+
+.colorPicker-handle {
+	/* pointer-events: none; */
+	cursor: grab;
+	--handleXOffset: 0;
+	--handleYOffset: 0;
+	--scaleFactor: 1;
+
+	--borderColor: var(--slate);
+
+	--colorPickerHandleSize: calc(
+		var(--colorPicker-width) * 0.9 * 0.1
+	);
+	/* pointer-events: none; */
+
+	top: 50%;
+	left: 50%;
+	transform-origin: center;
+	transform: translate(
+			calc(var(--handleXOffset) * 1px + -50%),
+			calc(var(--handleYOffset) * 1px + -50%)
+		)
+		scale(var(--scaleFactor));
+	position: absolute;
+
+	border-radius: 50%;
+	border: calc(var(--colorPickerHandleSize) * 0.15) solid
+		var(--borderColor);
+	background: var(--selectedColor);
+
+	width: var(--colorPickerHandleSize);
+	height: var(--colorPickerHandleSize);
+}
+
+.colorPicker-handle:active {
+	cursor: grabbing;
+}
