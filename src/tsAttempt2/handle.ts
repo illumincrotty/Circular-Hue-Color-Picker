@@ -15,7 +15,7 @@ class handle {
 		saturation: false,
 		lightness: false,
 	};
-	color: cu.hsl_color = { hue: 0, saturation: 100, lightness: 50 };
+	color: cu.hsl_color = { hue: 0, saturation: 0, lightness: 50 };
 	dimensions = {
 		offset: -1,
 		wheelBorder: -1,
@@ -51,26 +51,31 @@ class handle {
 	};
 
 	setDimensions(parent: HTMLElement) {
-		const wheelDimensions = parent.getBoundingClientRect();
-		const handleDimensions = this.handle.getBoundingClientRect();
+		if (this.dimensions.offset === -1) {
+			const wheelDimensions = parent.getBoundingClientRect();
+			const handleDimensions = this.handle.getBoundingClientRect();
 
-		this.dimensions.handleBorder = parseFloat(
-			getComputedStyle(this.handle).borderTopWidth.slice(0, -2)
-		);
-		this.dimensions.wheelBorder = parseFloat(
-			getComputedStyle(parent).borderTopWidth.slice(0, -2)
-		);
-		this.dimensions.handleWidth = handleDimensions.width;
-		this.dimensions.offset = wheelDimensions.width / 2;
-		this.dimensions.functionalRad =
-			wheelDimensions.width / 2 -
-			this.dimensions.wheelBorder -
-			(handleDimensions.width / 2 -
-				this.dimensions.handleBorder);
-		this.dimensions.bcrX = wheelDimensions.x;
-		this.dimensions.bcrY = wheelDimensions.y;
+			this.dimensions.handleBorder = parseFloat(
+				getComputedStyle(this.handle).borderTopWidth.slice(
+					0,
+					-2
+				)
+			);
+			this.dimensions.wheelBorder = parseFloat(
+				getComputedStyle(parent).borderTopWidth.slice(0, -2)
+			);
+			this.dimensions.handleWidth = handleDimensions.width;
+			this.dimensions.offset = wheelDimensions.width / 2;
+			this.dimensions.functionalRad =
+				wheelDimensions.width / 2 -
+				this.dimensions.wheelBorder -
+				(handleDimensions.width / 2 -
+					this.dimensions.handleBorder);
+			this.dimensions.bcrX = wheelDimensions.x;
+			this.dimensions.bcrY = wheelDimensions.y;
 
-		console.debug(this.dimensions);
+			console.debug(this.dimensions);
+		}
 	}
 
 	//#region event listener implementation
@@ -79,9 +84,7 @@ class handle {
 	};
 
 	down = (parentElement: HTMLElement) => {
-		if (this.dimensions.offset === -1) {
-			this.setDimensions(parentElement);
-		}
+		this.setDimensions(parentElement);
 		this.active = true;
 	};
 
