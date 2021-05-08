@@ -67,17 +67,19 @@ class colorWheel extends su.subComponents {
 	}
 
 	setDimensions() {
-		this.dimensions.radius = this.wheel.clientWidth / 2;
-		this.dimensions.x =
-			this.dimensions.radius +
-			this.wheel.clientLeft +
-			this.wheel.offsetLeft;
-		this.dimensions.y =
-			this.dimensions.radius +
-			this.wheel.clientTop +
-			this.wheel.offsetTop;
-		console.debug('Wheel Dimensions');
-		console.debug(this.dimensions);
+		if (this.dimensions.radius === -1) {
+			this.dimensions.radius = this.wheel.clientWidth / 2;
+			this.dimensions.x =
+				this.dimensions.radius +
+				this.wheel.clientLeft +
+				this.wheel.offsetLeft;
+			this.dimensions.y =
+				this.dimensions.radius +
+				this.wheel.clientTop +
+				this.wheel.offsetTop;
+			console.debug('Wheel Dimensions');
+			console.debug(this.dimensions);
+		}
 	}
 
 	//#region event listener implementation
@@ -85,9 +87,7 @@ class colorWheel extends su.subComponents {
 		// console.debug(e.target);
 
 		//if dimensions have not been set, set them
-		if (this.dimensions.radius === -1) {
-			this.setDimensions();
-		}
+		this.setDimensions();
 
 		/*if the element clicked was not the wheel or the current handle, 
 		it must be another handle, so change handles*/
@@ -98,9 +98,7 @@ class colorWheel extends su.subComponents {
 			const newSelected = this.selectHandle(
 				e.target as HTMLElement
 			);
-			console.debug(
-				`New selected handle has index ${newSelected}`
-			);
+
 			if (newSelected === -1) {
 				console.error('Selected element Not found');
 			}
@@ -224,6 +222,8 @@ class colorWheel extends su.subComponents {
 	}
 
 	update(change: cu.colorChange) {
+		this.setDimensions();
+		this.handles[this.selectedHandle].setDimensions(this.wheel);
 		if (
 			change.type == 'subtype' &&
 			change.value.type == 'lightness'
@@ -236,6 +236,10 @@ class colorWheel extends su.subComponents {
 
 		if (change?.source !== 'wheel') {
 			if (change.type == 'full') {
+				this.wheel.style.setProperty(
+					'--lightness',
+					`${change.value.lightness}%`
+				);
 				this.handles[this.selectedHandle].updateFromColor(
 					change.value
 				);

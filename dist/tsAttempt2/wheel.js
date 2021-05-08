@@ -18,15 +18,12 @@ class colorWheel extends su.subComponents {
         this.down = (e) => {
             // console.debug(e.target);
             //if dimensions have not been set, set them
-            if (this.dimensions.radius === -1) {
-                this.setDimensions();
-            }
+            this.setDimensions();
             /*if the element clicked was not the wheel or the current handle,
             it must be another handle, so change handles*/
             if (e.target !== this.wheel &&
                 e.target !== this.handles[this.selectedHandle].handle) {
                 const newSelected = this.selectHandle(e.target);
-                console.debug(`New selected handle has index ${newSelected}`);
                 if (newSelected === -1) {
                     console.error('Selected element Not found');
                 }
@@ -136,17 +133,19 @@ class colorWheel extends su.subComponents {
         console.groupEnd();
     }
     setDimensions() {
-        this.dimensions.radius = this.wheel.clientWidth / 2;
-        this.dimensions.x =
-            this.dimensions.radius +
-                this.wheel.clientLeft +
-                this.wheel.offsetLeft;
-        this.dimensions.y =
-            this.dimensions.radius +
-                this.wheel.clientTop +
-                this.wheel.offsetTop;
-        console.debug('Wheel Dimensions');
-        console.debug(this.dimensions);
+        if (this.dimensions.radius === -1) {
+            this.dimensions.radius = this.wheel.clientWidth / 2;
+            this.dimensions.x =
+                this.dimensions.radius +
+                    this.wheel.clientLeft +
+                    this.wheel.offsetLeft;
+            this.dimensions.y =
+                this.dimensions.radius +
+                    this.wheel.clientTop +
+                    this.wheel.offsetTop;
+            console.debug('Wheel Dimensions');
+            console.debug(this.dimensions);
+        }
     }
     //#endregion event listener implementation
     addHandle() {
@@ -168,12 +167,15 @@ class colorWheel extends su.subComponents {
         }
     }
     update(change) {
+        this.setDimensions();
+        this.handles[this.selectedHandle].setDimensions(this.wheel);
         if (change.type == 'subtype' &&
             change.value.type == 'lightness') {
             this.wheel.style.setProperty('--lightness', `${change.value.value}%`);
         }
         if ((change === null || change === void 0 ? void 0 : change.source) !== 'wheel') {
             if (change.type == 'full') {
+                this.wheel.style.setProperty('--lightness', `${change.value.lightness}%`);
                 this.handles[this.selectedHandle].updateFromColor(change.value);
             }
             if (change.type == 'subtype') {
