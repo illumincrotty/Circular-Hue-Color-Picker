@@ -1,14 +1,16 @@
 import { colorUtils as cu, timingUtils as tu, stateUtils as su, } from './utilities.js';
 import { colorWheel } from './wheel.js';
+import { sliders } from './slider.js';
 export { colorPickerComponent };
 class colorPickerComponent extends su.subComponents {
-    constructor(element) {
+    constructor(parentElement) {
         super();
         this.name = 'component';
         this.selectedColorIndex = -1;
         this.colors = [];
         this.changes = [];
         this.subComponents = [];
+        //#region non constructor functions
         this.logState = () => {
             console.info('Logging State Of Component');
             console.info(this);
@@ -27,12 +29,18 @@ class colorPickerComponent extends su.subComponents {
             if (this.wheel) {
                 this.wheel.addHandle();
             }
+            this.changes[this.selectedColorIndex] = {
+                type: 'full',
+                value: this.defaultColor(),
+            };
+            this.update();
         };
         this.removeColor = () => {
             if (this.colors.length > 1) {
                 this.colors.splice(this.selectedColorIndex, 1);
                 this.wheel.removeHandle(this.selectedColorIndex);
                 this.selectedColorIndex = this.colors.length - 1;
+                this.update();
                 return;
             }
             console.warn('Attempting to remove only color');
@@ -116,14 +124,19 @@ class colorPickerComponent extends su.subComponents {
                 element.resize();
             });
         };
+        //create and save unique identifier
+        colorPickerComponent.componentCount += 1;
+        this.id = colorPickerComponent.componentCount;
         this.addColor();
-        // const frag = document.createDocumentFragment();
         this.component = document.createElement('div');
         this.component.classList.add('colorPicker-component', 'colorPicker-container');
-        element.appendChild(this.component);
+        parentElement.appendChild(this.component);
+        this.component.addEventListener('resize', this.resize);
         //add Subcomponenets
         this.wheel = new colorWheel(this.component, this.changeFunction);
         this.subComponents.push(this.wheel);
+        this.subComponents.push(new sliders(this.component, this.changeFunction));
+        //#region testing
         //add temporary testing componenets
         const addColorButton = document.createElement('button');
         addColorButton.textContent = 'Add';
@@ -142,10 +155,10 @@ class colorPickerComponent extends su.subComponents {
         this.component.appendChild(addColorButton);
         this.component.appendChild(remColorButton);
         // this.text = new text(this.component);
+        //#endregion testing
     }
 }
-// class sliders extends su.subComponents{}
-// class range{}
+colorPickerComponent.componentCount = -1;
 // class text extends su.subComponents{
 // 	textWrapper: HTMLDivElement;
 // 	constructor(parentElement: HTMLElement) {

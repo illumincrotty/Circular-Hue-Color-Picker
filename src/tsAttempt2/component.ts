@@ -4,30 +4,37 @@ import {
 	stateUtils as su,
 } from './utilities.js';
 import { colorWheel } from './wheel.js';
+import { sliders } from './slider.js';
 export { colorPickerComponent };
 
 class colorPickerComponent extends su.subComponents {
+	static componentCount = -1;
+
 	name = 'component';
 	selectedColorIndex = -1;
 	colors: cu.hsl_color[] = [];
 	changes: (cu.colorChange | undefined)[] = [];
-
+	id: number;
 	component: HTMLElement;
 	subComponents: su.subComponents[] = [];
 	wheel: colorWheel;
 
-	constructor(element: HTMLElement) {
+	constructor(parentElement: HTMLElement) {
 		super();
-		this.addColor();
 
-		// const frag = document.createDocumentFragment();
+		//create and save unique identifier
+		colorPickerComponent.componentCount += 1;
+		this.id = colorPickerComponent.componentCount;
+
+		this.addColor();
 
 		this.component = document.createElement('div');
 		this.component.classList.add(
 			'colorPicker-component',
 			'colorPicker-container'
 		);
-		element.appendChild(this.component);
+		parentElement.appendChild(this.component);
+		this.component.addEventListener('resize', this.resize);
 
 		//add Subcomponenets
 		this.wheel = new colorWheel(
@@ -35,7 +42,11 @@ class colorPickerComponent extends su.subComponents {
 			this.changeFunction
 		);
 		this.subComponents.push(this.wheel);
+		this.subComponents.push(
+			new sliders(this.component, this.changeFunction)
+		);
 
+		//#region testing
 		//add temporary testing componenets
 		const addColorButton = document.createElement('button');
 		addColorButton.textContent = 'Add';
@@ -56,7 +67,9 @@ class colorPickerComponent extends su.subComponents {
 		this.component.appendChild(addColorButton);
 		this.component.appendChild(remColorButton);
 		// this.text = new text(this.component);
+		//#endregion testing
 	}
+	//#region non constructor functions
 	logState = () => {
 		console.info('Logging State Of Component');
 		console.info(this);
@@ -78,12 +91,18 @@ class colorPickerComponent extends su.subComponents {
 		if (this.wheel) {
 			this.wheel.addHandle();
 		}
+		this.changes[this.selectedColorIndex] = {
+			type: 'full',
+			value: this.defaultColor(),
+		};
+		this.update();
 	};
 	removeColor = () => {
 		if (this.colors.length > 1) {
 			this.colors.splice(this.selectedColorIndex, 1);
 			this.wheel.removeHandle(this.selectedColorIndex);
 			this.selectedColorIndex = this.colors.length - 1;
+			this.update();
 			return;
 		}
 		console.warn('Attempting to remove only color');
@@ -183,11 +202,8 @@ class colorPickerComponent extends su.subComponents {
 			element.resize();
 		});
 	};
+	//#endregion non constructor functions
 }
-
-// class sliders extends su.subComponents{}
-
-// class range{}
 
 // class text extends su.subComponents{
 // 	textWrapper: HTMLDivElement;
