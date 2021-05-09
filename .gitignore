@@ -1,0 +1,32 @@
+#.gitignore
+==========
+# Cache files  
+.eslintcache
+.npm
+*.tsbuildinfo
+*.code-workspace
+
+# Directories
+dist/*       
+node_modules/  
+# Env files 
+.env.
+.env.test 
+
+# Logs
+*.log
+logs
+npm-debug.log*
+
+# Misc files
+.DS_Store
+notes.md
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Local History for Visual Studio Code
+.history/
