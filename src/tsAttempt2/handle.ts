@@ -50,8 +50,8 @@ class handle {
 		this.handle.remove();
 	};
 
-	setDimensions(parent: HTMLElement) {
-		if (this.dimensions.offset === -1) {
+	setDimensions(parent: HTMLElement, force?: boolean) {
+		if (this.dimensions.offset === -1 || force) {
 			const wheelDimensions = parent.getBoundingClientRect();
 			const handleDimensions = this.handle.getBoundingClientRect();
 

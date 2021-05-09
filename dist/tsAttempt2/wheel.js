@@ -132,8 +132,8 @@ class colorWheel extends su.subComponents {
         console.info(this.handles);
         console.groupEnd();
     }
-    setDimensions() {
-        if (this.dimensions.radius === -1) {
+    setDimensions(force) {
+        if (this.dimensions.radius === -1 || force) {
             this.dimensions.radius = this.wheel.clientWidth / 2;
             this.dimensions.x =
                 this.dimensions.radius +
@@ -187,9 +187,11 @@ class colorWheel extends su.subComponents {
         }
     }
     resize() {
-        this.setDimensions();
+        console.debug('Wheel Resize');
+        this.setDimensions(true);
         this.handles.forEach((element) => {
-            element.setDimensions(this.wheel);
+            console.debug('Handle Resize');
+            element.setDimensions(this.wheel, true);
         });
     }
 }

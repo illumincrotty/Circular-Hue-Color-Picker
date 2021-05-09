@@ -120,8 +120,8 @@ class handle {
         //add self to dom
         parent.appendChild(this.handle);
     }
-    setDimensions(parent) {
-        if (this.dimensions.offset === -1) {
+    setDimensions(parent, force) {
+        if (this.dimensions.offset === -1 || force) {
             const wheelDimensions = parent.getBoundingClientRect();
             const handleDimensions = this.handle.getBoundingClientRect();
             this.dimensions.handleBorder = parseFloat(getComputedStyle(this.handle).borderTopWidth.slice(0, -2));
