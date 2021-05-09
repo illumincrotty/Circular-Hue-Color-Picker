@@ -120,6 +120,7 @@ class colorPickerComponent extends su.subComponents {
         };
         this.update = tu.throttle(this.unThrottledupdate.bind(this), 16);
         this.resize = () => {
+            console.debug('resize');
             this.subComponents.forEach((element) => {
                 element.resize();
             });
@@ -131,7 +132,7 @@ class colorPickerComponent extends su.subComponents {
         this.component = document.createElement('div');
         this.component.classList.add('colorPicker-component', 'colorPicker-container');
         parentElement.appendChild(this.component);
-        this.component.addEventListener('resize', this.resize);
+        window.addEventListener('resize', this.resize.bind(this));
         //add Subcomponenets
         this.wheel = new colorWheel(this.component, this.changeFunction);
         this.subComponents.push(this.wheel);

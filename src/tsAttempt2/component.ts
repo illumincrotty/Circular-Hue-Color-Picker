@@ -34,7 +34,7 @@ class colorPickerComponent extends su.subComponents {
 			'colorPicker-container'
 		);
 		parentElement.appendChild(this.component);
-		this.component.addEventListener('resize', this.resize);
+		window.addEventListener('resize', this.resize.bind(this));
 
 		//add Subcomponenets
 		this.wheel = new colorWheel(
@@ -198,6 +198,7 @@ class colorPickerComponent extends su.subComponents {
 
 	update = tu.throttle(this.unThrottledupdate.bind(this), 16);
 	resize = () => {
+		console.debug('resize');
 		this.subComponents.forEach((element) => {
 			element.resize();
 		});
