@@ -1,19 +1,20 @@
-import {
-	colorUtils as cu,
-	timingUtils as tu,
-	stateUtils as su,
-} from './utilities.js';
 import { handle } from './handle.js';
+import { colorChange } from './utilities/colorUtilities.js';
+import {
+	subComponents,
+	changeOrNum,
+} from './utilities/stateUtilities.js';
+import { throttle } from './utilities/timingUtilities.js';
 export { colorWheel };
 
-class colorWheel extends su.subComponents {
+class colorWheel extends subComponents {
 	//#region class variables
 	wheel: HTMLElement;
 	private _selectedHandle = -1;
-	public get selectedHandle() {
+	public get selectedHandle(): number {
 		return this._selectedHandle;
 	}
-	public set selectedHandle(value) {
+	public set selectedHandle(value: number) {
 		this._selectedHandle = value;
 	}
 	handles: handle[] = [];
@@ -23,12 +24,12 @@ class colorWheel extends su.subComponents {
 		x: -1,
 		y: -1,
 	};
-	changeFunction: su.changeOrNum;
+	changeFunction: changeOrNum;
 	name = 'wheel';
 
 	//#endregion class variables
 
-	constructor(parent: HTMLElement, createChange: su.changeOrNum) {
+	constructor(parent: HTMLElement, createChange: changeOrNum) {
 		super();
 		this.wheel = document.createElement('div');
 		this.wheel.classList.add('colorPicker-colorWheel');
@@ -58,7 +59,7 @@ class colorWheel extends su.subComponents {
 
 		parent.appendChild(this.wheel);
 	}
-	logState() {
+	logState(): void {
 		console.info('Logging state of Wheel');
 		console.info(this);
 		console.group('logging handles');
@@ -66,7 +67,7 @@ class colorWheel extends su.subComponents {
 		console.groupEnd();
 	}
 
-	setDimensions(force?: boolean) {
+	setDimensions(force?: boolean): void {
 		if (this.dimensions.radius === -1 || force) {
 			this.dimensions.radius = this.wheel.clientWidth / 2;
 			this.dimensions.x =
@@ -126,10 +127,10 @@ class colorWheel extends su.subComponents {
 	// private touchMoving = (e: TouchEvent) => {
 	// 	this.handles[this.selectedHandle].touchMoving(e);
 	// };
-	throttledMove = tu.throttle(this.moving, 16);
+	throttledMove = throttle(this.moving, 16);
 	//#endregion event listener implementation
 
-	addHandle() {
+	addHandle(): void {
 		this.handles.push(
 			new handle(
 				this.wheel,
@@ -164,9 +165,8 @@ class colorWheel extends su.subComponents {
 				//Reset Z index to creation order
 				this.handles[
 					this.selectedHandle
-				].handle.style.zIndex = this.handles[
-					this.selectedHandle
-				].id.toString();
+				].handle.style.zIndex =
+					this.handles[this.selectedHandle].id.toString();
 			}
 			this.selectedHandle = newSelected;
 			this.changeFunction(this.selectedHandle);
@@ -203,7 +203,7 @@ class colorWheel extends su.subComponents {
 		return -1;
 	};
 
-	removeHandle(index: number) {
+	removeHandle(index: number): void {
 		if (this.handles.length > 1) {
 			//remove element from dom
 			this.handles[index].remove();
@@ -221,7 +221,7 @@ class colorWheel extends su.subComponents {
 		}
 	}
 
-	update(change: cu.colorChange) {
+	update(change: colorChange): void {
 		this.setDimensions();
 		this.handles[this.selectedHandle].setDimensions(this.wheel);
 		if (

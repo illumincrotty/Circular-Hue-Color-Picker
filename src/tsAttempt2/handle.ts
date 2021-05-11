@@ -1,8 +1,21 @@
 import {
-	colorUtils as cu,
-	timingUtils as tu,
-	positionsUtils as pu,
-} from './utilities.js';
+	hsl_color_generic,
+	hsl_color,
+	colorChangeFunction,
+	colorSubtypeValue,
+	colorCopy,
+	hslColorToCssString,
+} from './utilities/colorUtilities';
+import {
+	cartPt,
+	cartToPolar,
+	polarToCart,
+	polarPt,
+	degreesToRadians,
+	radiansToDegrees,
+} from './utilities/positionUtilities';
+import { throttle } from './utilities/timingUtilities';
+
 export { handle };
 
 class handle {
@@ -10,12 +23,12 @@ class handle {
 	handle: HTMLElement;
 	id: number;
 	active = false;
-	locked: cu.hsl_color_generic<boolean> = {
+	locked: hsl_color_generic<boolean> = {
 		hue: false,
 		saturation: false,
 		lightness: false,
 	};
-	color: cu.hsl_color = { hue: 0, saturation: 0, lightness: 50 };
+	color: hsl_color = { hue: 0, saturation: 0, lightness: 50 };
 	dimensions = {
 		offset: -1,
 		wheelBorder: -1,
@@ -32,7 +45,7 @@ class handle {
 	constructor(
 		parent: HTMLElement,
 		idNumber: number,
-		changeFunction: cu.colorChangeFunction
+		changeFunction: colorChangeFunction
 	) {
 		//create element and add its class
 		this.handle = document.createElement('div');
@@ -45,15 +58,16 @@ class handle {
 		parent.appendChild(this.handle);
 	}
 
-	remove = () => {
+	remove = (): void => {
 		console.debug('Removing Self');
 		this.handle.remove();
 	};
 
-	setDimensions(parent: HTMLElement, force?: boolean) {
+	setDimensions(parent: HTMLElement, force?: boolean): void {
 		if (this.dimensions.offset === -1 || force) {
 			const wheelDimensions = parent.getBoundingClientRect();
-			const handleDimensions = this.handle.getBoundingClientRect();
+			const handleDimensions =
+				this.handle.getBoundingClientRect();
 
 			this.dimensions.handleBorder = parseFloat(
 				getComputedStyle(this.handle).borderTopWidth.slice(
@@ -79,16 +93,16 @@ class handle {
 	}
 
 	//#region event listener implementation
-	up = () => {
+	up = (): void => {
 		this.active = false;
 	};
 
-	down = (parentElement: HTMLElement) => {
+	down = (parentElement: HTMLElement): void => {
 		this.setDimensions(parentElement);
 		this.active = true;
 	};
 
-	click = (e: MouseEvent) => {
+	click = (e: MouseEvent): void => {
 		const x = e.clientX - this.dimensions.bcrX;
 		const y = e.clientY - this.dimensions.bcrY;
 		this.updateFromPosition({
@@ -97,12 +111,12 @@ class handle {
 		});
 	};
 
-	private unthrottledMove = (e: MouseEvent) => {
+	private unthrottledMove = (e: MouseEvent): void => {
 		if (this.active) {
 			this.click(e);
 		}
 	};
-	moving = tu.throttle(this.unthrottledMove, 30);
+	moving = throttle(this.unthrottledMove, 30);
 
 	private unthrottledTouchMove = (e: TouchEvent) => {
 		if (this.active) {
@@ -116,16 +130,16 @@ class handle {
 			});
 		}
 	};
-	touchMoving = tu.throttle(this.unthrottledTouchMove, 30);
+	touchMoving = throttle(this.unthrottledTouchMove, 30);
 
 	//#endregion event listener implementation
 
-	select = () => {
+	select = (): void => {
 		this.handle.style.setProperty('--scaleFactor', `1.2`);
 		this.handle.style.setProperty('--borderColor', `var(--Main)`);
 	};
 
-	deselect = () => {
+	deselect = (): void => {
 		this.handle.style.scale = '';
 		this.handle.style.setProperty('--scaleFactor', `1`);
 		this.handle.style.setProperty(
@@ -133,11 +147,11 @@ class handle {
 			`var(--Secondary)`
 		);
 	};
-	private updateFromPosition = (pt: pu.cartPt) => {
-		this.updateFromColor(this.polarToColor(pu.cartToPolar(pt)));
+	private updateFromPosition = (pt: cartPt) => {
+		this.updateFromColor(this.polarToColor(cartToPolar(pt)));
 	};
 
-	updateFromColor = (color: cu.hsl_color) => {
+	updateFromColor = (color: hsl_color): void => {
 		if (this.locked.hue) {
 			color.hue = this.color.hue;
 		}
@@ -148,21 +162,19 @@ class handle {
 			color.lightness = this.color.lightness;
 		}
 
-		const pt = pu.polarToCart(
-			this.colorToPolarCoordinates(color)
-		);
+		const pt = polarToCart(this.colorToPolarCoordinates(color));
 		this.update(pt, color);
 	};
 
-	updateFromColorSubtype = (change: cu.colorSubtypeValue) => {
-		const currentColor = cu.colorCopy(this.color);
+	updateFromColorSubtype = (change: colorSubtypeValue): void => {
+		const currentColor = colorCopy(this.color);
 		currentColor[change.type] = change.value;
 		this.updateFromColor(currentColor);
 	};
 
-	colorToPolarCoordinates = (color: cu.hsl_color): pu.polarPt => {
+	colorToPolarCoordinates = (color: hsl_color): polarPt => {
 		return {
-			theta: pu.degreesToRadians(color.hue - 90),
+			theta: degreesToRadians(color.hue - 90),
 			radius: Math.min(
 				(color.saturation / 100) *
 					this.dimensions.functionalRad,
@@ -171,9 +183,9 @@ class handle {
 		};
 	};
 
-	polarToColor = (pt: pu.polarPt): cu.hsl_color => {
+	polarToColor = (pt: polarPt): hsl_color => {
 		return {
-			hue: (pu.radiansToDegrees(pt.theta) + 360 + 90) % 360,
+			hue: (radiansToDegrees(pt.theta) + 360 + 90) % 360,
 			saturation:
 				100 *
 				(Math.min(pt.radius, this.dimensions.functionalRad) /
@@ -182,7 +194,7 @@ class handle {
 		};
 	};
 
-	private update(cartPt: pu.cartPt, color: cu.hsl_color) {
+	private update(cartPt: cartPt, color: hsl_color) {
 		// console.debug('Update');
 		// console.debug(cartPt);
 		// console.debug(color);
@@ -193,21 +205,20 @@ class handle {
 		});
 	}
 
-	updateHelper(cartPt: pu.cartPt, color: cu.hsl_color) {
+	updateHelper(cartPt: cartPt, color: hsl_color): hsl_color {
 		this.updateColor(color);
 		this.updatePosition(cartPt);
 		return color;
 	}
 
-	private updateColor = (color: cu.hsl_color) => {
-		// const colString = cu.hslColorToCssString(color);
+	private updateColor = (color: hsl_color) => {
+		// const colString = hslColorToCssString(color);
 		// console.debug(colString);
 		this.color = color;
-		this.handle.style.backgroundColor = cu.hslColorToCssString(
-			color
-		);
+		this.handle.style.backgroundColor =
+			hslColorToCssString(color);
 	};
-	private updatePosition = (pt: pu.cartPt) => {
+	private updatePosition = (pt: cartPt) => {
 		this.handle.style.setProperty('--handleXOffset', `${pt.x}`);
 		this.handle.style.setProperty('--handleYOffset', `${pt.y}`);
 	};

@@ -1,22 +1,25 @@
+import { subComponents } from './utilities/stateUtilities.js';
 import {
-	colorUtils as cu,
-	timingUtils as tu,
-	stateUtils as su,
-} from './utilities.js';
+	colorChange,
+	colorCopy,
+	defaultColor,
+	hsl_color,
+} from './utilities/colorUtilities.js';
 import { colorWheel } from './wheel.js';
 import { sliders } from './slider.js';
+import { throttle } from './utilities/timingUtilities.js';
 export { colorPickerComponent };
 
-class colorPickerComponent extends su.subComponents {
+class colorPickerComponent extends subComponents {
 	static componentCount = -1;
 
 	name = 'component';
 	selectedColorIndex = -1;
-	colors: cu.hsl_color[] = [];
-	changes: (cu.colorChange | undefined)[] = [];
+	colors: hsl_color[] = [];
+	changes: (colorChange | undefined)[] = [];
 	id: number;
 	component: HTMLElement;
-	subComponents: su.subComponents[] = [];
+	subComponents: subComponents[] = [];
 	wheel: colorWheel;
 
 	constructor(parentElement: HTMLElement) {
@@ -70,7 +73,7 @@ class colorPickerComponent extends su.subComponents {
 		//#endregion testing
 	}
 	//#region non constructor functions
-	logState = () => {
+	logState = (): void => {
 		console.info('Logging State Of Component');
 		console.info(this);
 		console.info(
@@ -83,9 +86,9 @@ class colorPickerComponent extends su.subComponents {
 		});
 	};
 
-	addColor = () => {
+	addColor = (): void => {
 		this.selectedColorIndex =
-			this.colors.push(cu.defaultColor()) - 1;
+			this.colors.push(defaultColor()) - 1;
 		this.colors[this.selectedColorIndex];
 		this.changes.push(undefined);
 		if (this.wheel) {
@@ -93,11 +96,11 @@ class colorPickerComponent extends su.subComponents {
 		}
 		this.changes[this.selectedColorIndex] = {
 			type: 'full',
-			value: cu.defaultColor(),
+			value: defaultColor(),
 		};
 		this.update();
 	};
-	removeColor = () => {
+	removeColor = (): void => {
 		if (this.colors.length > 1) {
 			this.colors.splice(this.selectedColorIndex, 1);
 			this.wheel.removeHandle(this.selectedColorIndex);
@@ -107,7 +110,7 @@ class colorPickerComponent extends su.subComponents {
 		}
 		console.warn('Attempting to remove only color');
 	};
-	selectColor = (index: number) => {
+	selectColor = (index: number): void => {
 		if (index < this.colors.length) {
 			this.selectedColorIndex = index;
 			this.changes[this.selectedColorIndex] = {
@@ -121,7 +124,7 @@ class colorPickerComponent extends su.subComponents {
 		console.error('Invalid index selected');
 	};
 
-	changeFunction = (inputChange: cu.colorChange | number) => {
+	changeFunction = (inputChange: colorChange | number): void => {
 		//the input change is which color is selected
 		if (typeof inputChange === 'number') {
 			this.selectColor(inputChange);
@@ -139,7 +142,7 @@ class colorPickerComponent extends su.subComponents {
 		}
 		const currentChange = this.changes[
 			this.selectedColorIndex
-		] as cu.colorChange;
+		] as colorChange;
 
 		if (currentChange.type == 'full') {
 			currentChange['value'][inputChange.value.type] =
@@ -147,13 +150,13 @@ class colorPickerComponent extends su.subComponents {
 			this.update();
 			return;
 		}
-		if (currentChange!.type == 'subtype') {
+		if (currentChange.type == 'subtype') {
 			if (currentChange.value.type == inputChange.value.type) {
 				currentChange.value.value = inputChange.value.value;
 				this.update();
 				return;
 			}
-			const copy: cu.hsl_color = cu.colorCopy(
+			const copy: hsl_color = colorCopy(
 				this.colors[this.selectedColorIndex]
 			);
 			copy[currentChange.value.type] =
@@ -173,7 +176,7 @@ class colorPickerComponent extends su.subComponents {
 		);
 	};
 
-	unThrottledupdate = () => {
+	unThrottledupdate = (): void => {
 		const change = this.changes[this.selectedColorIndex];
 		if (change !== undefined) {
 			if (change.type === 'full') {
@@ -186,14 +189,14 @@ class colorPickerComponent extends su.subComponents {
 			}
 			this.colors[this.selectedColorIndex];
 			this.subComponents.forEach((subcomponent) => {
-				subcomponent.update(change!);
+				subcomponent.update(change);
 			});
 			this.changes[this.selectedColorIndex] = undefined;
 		}
 	};
 
-	update = tu.throttle(this.unThrottledupdate.bind(this), 16);
-	resize = () => {
+	update = throttle(this.unThrottledupdate.bind(this), 16);
+	resize = (): void => {
 		console.debug('resize');
 		this.subComponents.forEach((element) => {
 			element.resize();
@@ -202,7 +205,7 @@ class colorPickerComponent extends su.subComponents {
 	//#endregion non constructor functions
 }
 
-// class text extends su.subComponents{
+// class text extends subComponents{
 // 	textWrapper: HTMLDivElement;
 // 	constructor(parentElement: HTMLElement) {
 // 		super()

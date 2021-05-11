@@ -1,13 +1,24 @@
-import { colorUtils as cu, stateUtils as su } from './utilities.js';
+import {
+	changeSource,
+	hsl_color_generic,
+	colorChange,
+	colorSubtype,
+	colorChangeFunction,
+} from './utilities/colorUtilities';
+import {
+	subComponents,
+	changeOrNum,
+} from './utilities/stateUtilities';
+
 export { sliders };
-class sliders extends su.subComponents {
-	changeFunction: su.changeOrNum;
-	name: cu.changeSource = 'slider';
+class sliders extends subComponents {
+	changeFunction: changeOrNum;
+	name: changeSource = 'slider';
 	sliderWrapper: HTMLDivElement;
-	ranges!: cu.hsl_color_generic<range>;
+	ranges!: hsl_color_generic<range>;
 	constructor(
 		parentElement: HTMLElement,
-		changeFunctions: su.changeOrNum
+		changeFunctions: changeOrNum
 	) {
 		super();
 		this.changeFunction = changeFunctions;
@@ -21,7 +32,7 @@ class sliders extends su.subComponents {
 		this.createRanges();
 	}
 
-	createRanges = () => {
+	createRanges = (): void => {
 		this.ranges = {
 			hue: new range(
 				this.sliderWrapper,
@@ -41,7 +52,7 @@ class sliders extends su.subComponents {
 		};
 	};
 
-	update(change: cu.colorChange): void {
+	update(change: colorChange): void {
 		if (
 			change.source !== undefined &&
 			change.source !== 'slider'
@@ -83,11 +94,13 @@ class sliders extends su.subComponents {
 		console.groupEnd();
 	}
 
-	resize(): void {}
+	resize(): void {
+		1 == 1;
+	}
 }
 
 type rangeOpts = {
-	name: cu.colorSubtype;
+	name: colorSubtype;
 	min: number;
 	max: number;
 	default: number;
@@ -99,7 +112,7 @@ class range {
 	constructor(
 		parentElement: HTMLElement,
 		options: rangeOpts,
-		changeFunction: cu.colorChangeFunction
+		changeFunction: colorChangeFunction
 	) {
 		this.default = options.default;
 
