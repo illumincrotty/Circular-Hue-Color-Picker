@@ -84,8 +84,8 @@ class colorPickerComponent extends su.subComponents {
 	};
 
 	addColor = () => {
-		this.colors.push(this.defaultColor());
-		this.selectedColorIndex = this.colors.length - 1;
+		this.selectedColorIndex =
+			this.colors.push(cu.defaultColor()) - 1;
 		this.colors[this.selectedColorIndex];
 		this.changes.push(undefined);
 		if (this.wheel) {
@@ -93,7 +93,7 @@ class colorPickerComponent extends su.subComponents {
 		}
 		this.changes[this.selectedColorIndex] = {
 			type: 'full',
-			value: this.defaultColor(),
+			value: cu.defaultColor(),
 		};
 		this.update();
 	};
@@ -171,10 +171,6 @@ class colorPickerComponent extends su.subComponents {
 		throw new Error(
 			'theoretically unreachable part of createChange function'
 		);
-	};
-
-	defaultColor = (): cu.hsl_color => {
-		return { hue: 0, saturation: 0, lightness: 50 };
 	};
 
 	unThrottledupdate = () => {
