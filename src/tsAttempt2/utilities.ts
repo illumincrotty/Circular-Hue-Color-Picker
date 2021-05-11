@@ -1,6 +1,4 @@
-export { colorUtils, positionsUtils, timingUtils, stateUtils };
-
-namespace colorUtils {
+export module colorUtils {
 	export type colorSubtype = 'hue' | 'saturation' | 'lightness';
 
 	export interface colorSubtypeValue {
@@ -78,7 +76,7 @@ namespace colorUtils {
 	};
 }
 
-namespace positionsUtils {
+export module positionsUtils {
 	export type polarPt = { theta: number; radius: number };
 	export type cartPt = { x: number; y: number };
 	export type pt = polarPt | cartPt;
@@ -103,7 +101,7 @@ namespace positionsUtils {
 	}
 }
 
-namespace timingUtils {
+export module timingUtils {
 	export const debounce = <fn extends (...args: any[]) => void>(
 		callback: fn,
 		wait: number
@@ -159,7 +157,7 @@ namespace timingUtils {
 	};
 }
 
-namespace stateUtils {
+export module stateUtils {
 	export interface changeOrNum
 		extends colorUtils.colorChangeFunction {
 		(input: colorUtils.colorChange | number): void;
