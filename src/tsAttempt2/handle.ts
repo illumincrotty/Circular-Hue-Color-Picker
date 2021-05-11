@@ -88,12 +88,6 @@ class handle {
 		this.active = true;
 	};
 
-	private unthrottledMove = (e: MouseEvent) => {
-		if (this.active) {
-			this.click(e);
-		}
-	};
-
 	click = (e: MouseEvent) => {
 		const x = e.clientX - this.dimensions.bcrX;
 		const y = e.clientY - this.dimensions.bcrY;
@@ -103,16 +97,25 @@ class handle {
 		});
 	};
 
-	private unthrottledTouchMove = (e: TouchEvent) => {
-		const x = e.targetTouches[0].clientX - this.dimensions.bcrX;
-		const y = e.targetTouches[0].clientY - this.dimensions.bcrY;
-		this.updateFromPosition({
-			x: x - this.dimensions.offset,
-			y: y - this.dimensions.offset,
-		});
+	private unthrottledMove = (e: MouseEvent) => {
+		if (this.active) {
+			this.click(e);
+		}
 	};
+	moving = tu.throttle(this.unthrottledMove, 30);
 
-	moving = tu.throttle(this.unthrottledMove, 16);
+	private unthrottledTouchMove = (e: TouchEvent) => {
+		if (this.active) {
+			const x =
+				e.targetTouches[0].clientX - this.dimensions.bcrX;
+			const y =
+				e.targetTouches[0].clientY - this.dimensions.bcrY;
+			this.updateFromPosition({
+				x: x - this.dimensions.offset,
+				y: y - this.dimensions.offset,
+			});
+		}
+	};
 	touchMoving = tu.throttle(this.unthrottledTouchMove, 30);
 
 	//#endregion event listener implementation
