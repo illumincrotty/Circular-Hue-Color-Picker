@@ -11,5 +11,4 @@ if (colorPicker) {
 	linkElem.id = 'colorPicker-style';
 	document.head.appendChild(linkElem);
 	const component = new colorPickerComponent(colorPicker);
-	// component.update();
 }
