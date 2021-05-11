@@ -31,9 +31,9 @@ namespace colorUtils {
 		lightness: type;
 	}
 	export interface hsl_color extends hsl_color_generic<number> {
-		hue: number;
-		saturation: number;
-		lightness: number;
+		hue: NonNullable<number>;
+		saturation: NonNullable<number>;
+		lightness: NonNullable<number>;
 	}
 
 	export interface colorChangeFunction {
@@ -56,6 +56,10 @@ namespace colorUtils {
 	// 		return callback(...args);
 	// 	};
 	// }
+
+	export function defaultColor(): hsl_color {
+		return { hue: 0, saturation: 0, lightness: 50 };
+	}
 
 	export function colorCopy<type>(
 		color: hsl_color_generic<type>
@@ -100,26 +104,57 @@ namespace positionsUtils {
 }
 
 namespace timingUtils {
-	type AnyFunction = (...args: any[]) => any;
-	export const throttle = (
-		callback: AnyFunction,
-		timeout: number = 300
+	export const debounce = <fn extends (...args: any[]) => void>(
+		callback: fn,
+		wait: number
 	) => {
-		let ready: boolean = true;
-		return (
-			...args: Parameters<AnyFunction>
-		): ReturnType<AnyFunction> => {
-			// console.log('throttled inner');
-			if (!ready) {
-				// console.log('throttled deny');
+		let timeout = -1;
+
+		return (...args: Parameters<fn>) => {
+			if (timeout) {
+				clearTimeout(timeout);
+			}
+			timeout = setTimeout(() => {
+				callback(...args);
+			}, wait);
+		};
+	};
+
+	export const throttle = <fn extends (...args: any[]) => any>(
+		callback: fn,
+		wait: number
+	) => {
+		let first = true;
+		let calledBeforeThrottleTimerOver = false;
+		let recentArgs: Parameters<fn>;
+
+		const call = () => {
+			callback(...recentArgs);
+		};
+
+		const delayedCall = () => {
+			setTimeout(() => {
+				call();
+				if (calledBeforeThrottleTimerOver) {
+					calledBeforeThrottleTimerOver = false;
+					delayedCall();
+				} else {
+					first = true;
+				}
+			}, wait);
+		};
+
+		return (...args: Parameters<fn>) => {
+			recentArgs = args;
+			if (first) {
+				first = false;
+				call();
+				delayedCall();
 				return;
 			}
-
-			ready = false;
-			setTimeout(() => {
-				ready = true;
-			}, timeout);
-			return callback(...args);
+			if (!calledBeforeThrottleTimerOver) {
+				calledBeforeThrottleTimerOver = true;
+			}
 		};
 	};
 }
