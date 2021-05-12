@@ -1,11 +1,9 @@
 import {
 	hsl_color_generic,
 	hsl_color,
-	colorChangeFunction,
-	colorSubtypeValue,
-	colorCopy,
 	hslColorToCssString,
-} from './utilities/colorUtilities';
+	colorChangeExtended,
+} from './utilities/colorUtilities.js';
 import {
 	cartPt,
 	cartToPolar,
@@ -13,8 +11,9 @@ import {
 	polarPt,
 	degreesToRadians,
 	radiansToDegrees,
-} from './utilities/positionUtilities';
-import { throttle } from './utilities/timingUtilities';
+} from './utilities/positionUtilities.js';
+import { emitColorChange } from './utilities/stateUtilities.js';
+import { throttle } from './utilities/timingUtilities.js';
 
 export { handle };
 
@@ -38,42 +37,26 @@ class handle {
 		bcrX: -1,
 		bcrY: -1,
 	};
-	changeFunction;
-
 	//#endregion class variables
 
-	constructor(
-		parent: HTMLElement,
-		idNumber: number,
-		changeFunction: colorChangeFunction
-	) {
+	constructor(parent: HTMLElement, idNumber: number) {
 		//create element and add its class
 		this.handle = document.createElement('div');
 		this.handle.classList.add('colorPicker-handle');
 		this.id = idNumber;
 		this.select();
-		this.changeFunction = changeFunction;
 
 		//add self to dom
 		parent.appendChild(this.handle);
 	}
 
-	remove = (): void => {
-		console.debug('Removing Self');
-		this.handle.remove();
-	};
-
 	setDimensions(parent: HTMLElement, force?: boolean): void {
 		if (this.dimensions.offset === -1 || force) {
 			const wheelDimensions = parent.getBoundingClientRect();
-			const handleDimensions =
-				this.handle.getBoundingClientRect();
+			const handleDimensions = this.handle.getBoundingClientRect();
 
 			this.dimensions.handleBorder = parseFloat(
-				getComputedStyle(this.handle).borderTopWidth.slice(
-					0,
-					-2
-				)
+				getComputedStyle(this.handle).borderTopWidth.slice(0, -2)
 			);
 			this.dimensions.wheelBorder = parseFloat(
 				getComputedStyle(parent).borderTopWidth.slice(0, -2)
@@ -83,14 +66,18 @@ class handle {
 			this.dimensions.functionalRad =
 				wheelDimensions.width / 2 -
 				this.dimensions.wheelBorder -
-				(handleDimensions.width / 2 -
-					this.dimensions.handleBorder);
+				(handleDimensions.width / 2 - this.dimensions.handleBorder);
 			this.dimensions.bcrX = wheelDimensions.x;
 			this.dimensions.bcrY = wheelDimensions.y;
 
 			console.debug(this.dimensions);
 		}
 	}
+
+	remove = (): void => {
+		console.debug('Removing Self');
+		this.handle.remove();
+	};
 
 	//#region event listener implementation
 	up = (): void => {
@@ -120,10 +107,8 @@ class handle {
 
 	private unthrottledTouchMove = (e: TouchEvent) => {
 		if (this.active) {
-			const x =
-				e.targetTouches[0].clientX - this.dimensions.bcrX;
-			const y =
-				e.targetTouches[0].clientY - this.dimensions.bcrY;
+			const x = e.targetTouches[0].clientX - this.dimensions.bcrX;
+			const y = e.targetTouches[0].clientY - this.dimensions.bcrY;
 			this.updateFromPosition({
 				x: x - this.dimensions.offset,
 				y: y - this.dimensions.offset,
@@ -142,16 +127,17 @@ class handle {
 	deselect = (): void => {
 		this.handle.style.scale = '';
 		this.handle.style.setProperty('--scaleFactor', `1`);
-		this.handle.style.setProperty(
-			'--borderColor',
-			`var(--Secondary)`
-		);
+		this.handle.style.setProperty('--borderColor', `var(--Secondary)`);
 	};
 	private updateFromPosition = (pt: cartPt) => {
-		this.updateFromColor(this.polarToColor(cartToPolar(pt)));
+		this.update(this.colorToPoints(this.polarToColor(cartToPolar(pt))));
 	};
 
 	updateFromColor = (color: hsl_color): void => {
+		this.updateHelper(this.colorToPoints(color));
+	};
+
+	private colorToPoints = (color: hsl_color): [cartPt, hsl_color] => {
 		if (this.locked.hue) {
 			color.hue = this.color.hue;
 		}
@@ -163,21 +149,14 @@ class handle {
 		}
 
 		const pt = polarToCart(this.colorToPolarCoordinates(color));
-		this.update(pt, color);
-	};
-
-	updateFromColorSubtype = (change: colorSubtypeValue): void => {
-		const currentColor = colorCopy(this.color);
-		currentColor[change.type] = change.value;
-		this.updateFromColor(currentColor);
+		return [pt, color];
 	};
 
 	colorToPolarCoordinates = (color: hsl_color): polarPt => {
 		return {
 			theta: degreesToRadians(color.hue - 90),
 			radius: Math.min(
-				(color.saturation / 100) *
-					this.dimensions.functionalRad,
+				(color.saturation / 100) * this.dimensions.functionalRad,
 				this.dimensions.functionalRad
 			),
 		};
@@ -194,29 +173,23 @@ class handle {
 		};
 	};
 
-	private update(cartPt: cartPt, color: hsl_color) {
-		// console.debug('Update');
-		// console.debug(cartPt);
-		// console.debug(color);
-		this.changeFunction({
+	private update(input: [cartPt, hsl_color]) {
+		emitColorChange({
 			type: 'full',
-			value: this.updateHelper(cartPt, color),
+			value: this.updateHelper(input),
 			source: 'wheel',
-		});
+		} as colorChangeExtended);
 	}
 
-	updateHelper(cartPt: cartPt, color: hsl_color): hsl_color {
-		this.updateColor(color);
-		this.updatePosition(cartPt);
-		return color;
+	updateHelper(input: [cartPt, hsl_color]): hsl_color {
+		this.updateColor(input[1]);
+		this.updatePosition(input[0]);
+		return input[1];
 	}
 
 	private updateColor = (color: hsl_color) => {
-		// const colString = hslColorToCssString(color);
-		// console.debug(colString);
 		this.color = color;
-		this.handle.style.backgroundColor =
-			hslColorToCssString(color);
+		this.handle.style.backgroundColor = hslColorToCssString(color);
 	};
 	private updatePosition = (pt: cartPt) => {
 		this.handle.style.setProperty('--handleXOffset', `${pt.x}`);
