@@ -2,15 +2,12 @@ export type colorSubtype = 'hue' | 'saturation' | 'lightness';
 
 export interface colorSubtypeValue {
 	type: colorSubtype;
-	value: number;
+	value: NonNullable<number>;
 }
-// if (VAR.type === "hue") {
-// } else if (VAR.type === "saturation") {
-// } else if (VAR.type === "lightness") {
-// }
+
 export type changeSource = 'wheel' | 'text' | 'slider' | 'component';
 
-export type colorChange =
+export type colorChangeExtended =
 	| {
 			type: 'subtype';
 			value: colorSubtypeValue;
@@ -18,6 +15,10 @@ export type colorChange =
 	  }
 	| { type: 'full'; value: hsl_color; source?: changeSource };
 
+export type colorChange = {
+	color: hsl_color;
+	source?: changeSource;
+};
 export interface hsl_color_generic<type> {
 	hue: type;
 	saturation: type;
@@ -30,25 +31,8 @@ export interface hsl_color extends hsl_color_generic<number> {
 }
 
 export interface colorChangeFunction {
-	(input: colorChange): void;
+	(input: colorChangeExtended): void;
 }
-
-// export interface colorChangeFunction {
-// 	(...any: any[]): colorChange;
-// }
-// export interface colorChangeFunctionNoArgs
-// 	extends colorChangeFunction {
-// 	(): colorChange;
-// }
-
-// export function colorChangeFunctionClosure(
-// 	callback: colorChangeFunction,
-// 	...args: Parameters<colorChangeFunction>
-// ): colorChangeFunctionNoArgs {
-// 	return () => {
-// 		return callback(...args);
-// 	};
-// }
 
 export function defaultColor(): hsl_color {
 	return { hue: 0, saturation: 0, lightness: 50 };
