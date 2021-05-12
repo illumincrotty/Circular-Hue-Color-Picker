@@ -1,8 +1,11 @@
 import { handle } from './handle.js';
 import { colorChange } from './utilities/colorUtilities.js';
 import {
+	colorStateManger,
+	emitSelectedChange,
+	resizeAlert,
+	selectedStateManger,
 	subComponents,
-	changeOrNum,
 } from './utilities/stateUtilities.js';
 import { throttle } from './utilities/timingUtilities.js';
 export { colorWheel };
@@ -10,13 +13,7 @@ export { colorWheel };
 class colorWheel extends subComponents {
 	//#region class variables
 	wheel: HTMLElement;
-	private _selectedHandle = -1;
-	public get selectedHandle(): number {
-		return this._selectedHandle;
-	}
-	public set selectedHandle(value: number) {
-		this._selectedHandle = value;
-	}
+	private selectedHandle = -1;
 	handles: handle[] = [];
 	touchEnabled = false;
 	dimensions = {
@@ -24,18 +21,22 @@ class colorWheel extends subComponents {
 		x: -1,
 		y: -1,
 	};
-	changeFunction: changeOrNum;
 	name = 'wheel';
 
 	//#endregion class variables
 
-	constructor(parent: HTMLElement, createChange: changeOrNum) {
+	constructor(parent: HTMLElement) {
 		super();
 		this.wheel = document.createElement('div');
 		this.wheel.classList.add('colorPicker-colorWheel');
-		this.changeFunction = createChange;
 
-		this.addHandle();
+		selectedStateManger.subscribe(
+			this.selectionHandler.bind(this)
+		);
+		colorStateManger.subscribe(
+			this.colorChangeHandler.bind(this)
+		);
+		resizeAlert.subscribe(this.resize.bind(this));
 
 		//#region event listeners
 		//#region click listeners
@@ -59,6 +60,7 @@ class colorWheel extends subComponents {
 
 		parent.appendChild(this.wheel);
 	}
+
 	logState(): void {
 		console.info('Logging state of Wheel');
 		console.info(this);
@@ -85,8 +87,6 @@ class colorWheel extends subComponents {
 
 	//#region event listener implementation
 	private down = (e: MouseEvent) => {
-		// console.debug(e.target);
-
 		//if dimensions have not been set, set them
 		this.setDimensions();
 
@@ -96,9 +96,10 @@ class colorWheel extends subComponents {
 			e.target !== this.wheel &&
 			e.target !== this.handles[this.selectedHandle].handle
 		) {
-			const newSelected = this.selectHandle(
+			const newSelected = this.findHandle(
 				e.target as HTMLElement
 			);
+			emitSelectedChange(newSelected);
 
 			if (newSelected === -1) {
 				console.error('Selected element Not found');
@@ -107,6 +108,7 @@ class colorWheel extends subComponents {
 		// console.debug(e);
 		this.handles[this.selectedHandle].down(this.wheel);
 	};
+
 	private up = () => {
 		this.handles[this.selectedHandle].up();
 	};
@@ -130,129 +132,102 @@ class colorWheel extends subComponents {
 	throttledMove = throttle(this.moving, 16);
 	//#endregion event listener implementation
 
-	addHandle(): void {
-		this.handles.push(
-			new handle(
-				this.wheel,
-				this.handles.length,
-				this.changeFunction
-			)
-		);
-		this.selectHandle(this.handles.length - 1);
+	selectionHandler(input: number | 'new' | 'delete'): void {
+		if (typeof input === 'number') {
+			this.deslectHandle(this.selectedHandle);
+			this.selectedHandle = input;
+			this.selectHandle(input);
+		} else {
+			if (input === 'new') {
+				this.addHandle();
+				return;
+			}
+			if (input === 'delete') {
+				this.removeHandle(this.selectedHandle);
+				return;
+			}
+		}
 	}
 
-	/**
-	 * Selects a handle and deselects the old handle
-	 * @param newSelected the index, handle object or element to be selected
-	 * @returns the index of the selected element or -1 if not found
-	 */
-	selectHandle = (
-		newSelected: number | handle | HTMLElement
-	): number => {
-		//newSelected is an index
-		if (typeof newSelected === 'number') {
-			//newSelected is past the length of the list or is less than 0
-			if (
-				newSelected >= this.handles.length ||
-				newSelected < 0
-			) {
-				return -1;
-			}
-			//if current selected handle is defined
-			if (this.handles[this.selectedHandle] !== undefined) {
-				this.handles[this.selectedHandle].deselect();
+	addHandle(): void {
+		console.log('Adding Handle');
+		this.handles.push(
+			new handle(this.wheel, this.handles.length)
+		);
+	}
 
-				//Reset Z index to creation order
-				this.handles[
-					this.selectedHandle
-				].handle.style.zIndex =
-					this.handles[this.selectedHandle].id.toString();
-			}
-			this.selectedHandle = newSelected;
-			this.changeFunction(this.selectedHandle);
-			this.handles[this.selectedHandle].select();
-			this.handles[this.selectedHandle].handle.style.zIndex = (
-				this.handles.length + 5
-			).toString();
-			return this.selectedHandle;
+	removeHandle(index: number): void {
+		if (this.handles.length > 1) {
+			//remove element from dom
+			this.handles[index]?.remove();
+
+			//remove from array
+			console.log(this.handles.splice(index, 1));
+
+			//decrement all following ID's
+			this.handles.slice(index).forEach((item) => {
+				item.id -= 1;
+			});
 		}
-		if (newSelected instanceof handle) {
-			const selected = this.handles.indexOf(newSelected);
-			if (selected !== -1) {
-				return this.selectHandle(selected);
-			}
-			return -1;
+	}
+
+	deslectHandle = (index: number): void => {
+		if (this.handles[this.selectedHandle] !== undefined) {
+			this.handles[index].deselect();
+
+			//Reset Z index to creation order
+			this.handles[index].handle.style.zIndex =
+				this.handles[index].id.toString();
 		}
-		if (newSelected instanceof HTMLElement) {
+	};
+
+	selectHandle = (input: number): void => {
+		this.handles[input].select();
+		this.handles[input].handle.style.zIndex = (
+			this.handles.length + 5
+		).toString();
+		return;
+	};
+
+	findHandle = (input: handle | HTMLElement): number => {
+		if (input instanceof handle) {
+			const selected = this.handles.indexOf(input);
+			return selected;
+		}
+		if (input instanceof HTMLElement) {
 			const selected = this.handles.reduce(
 				(value, current, index) => {
-					if (current.handle === newSelected) {
+					if (current.handle === input) {
 						return index;
 					}
 					return value;
 				},
 				-1
 			);
-			if (selected !== -1) {
-				return this.selectHandle(selected);
-			}
 			return selected;
 		}
-
-		console.error('Removed handle input was of an invalid type');
 		return -1;
 	};
 
-	removeHandle(index: number): void {
-		if (this.handles.length > 1) {
-			//remove element from dom
-			this.handles[index].remove();
-
-			//remove from array
-			this.handles.splice(index, 1);
-
-			//decrement all following ID's
-			this.handles.slice(index).forEach((item) => {
-				item.id -= 1;
-			});
-
-			//make most recently added element the selected handle/color
-			this.selectHandle(this.handles.length - 1);
-		}
-	}
-
-	update(change: colorChange): void {
+	colorChangeHandler(change: colorChange): void {
 		this.setDimensions();
-		this.handles[this.selectedHandle].setDimensions(this.wheel);
-		if (
-			change.type == 'subtype' &&
-			change.value.type == 'lightness'
-		) {
-			this.wheel.style.setProperty(
-				'--lightness',
-				`${change.value.value}%`
+		if (this.selectedHandle > 0) {
+			this.handles[this.selectedHandle].setDimensions(
+				this.wheel
 			);
 		}
-
 		if (change?.source !== 'wheel') {
-			if (change.type == 'full') {
-				this.wheel.style.setProperty(
-					'--lightness',
-					`${change.value.lightness}%`
-				);
-				this.handles[this.selectedHandle].updateFromColor(
-					change.value
-				);
-			}
-			if (change.type == 'subtype') {
-				this.handles[
-					this.selectedHandle
-				].updateFromColorSubtype(change.value);
-			}
-		} else {
-			// console.debug('change not from wheel');
+			this.wheel.style.setProperty(
+				'--lightness',
+				`${change.color.lightness}%`
+			);
+
+			this.handles[this.selectedHandle].updateFromColor(
+				change.color
+			);
 		}
 	}
+
 	resize(): void {
 		console.debug('Wheel Resize');
 		this.setDimensions(true);
