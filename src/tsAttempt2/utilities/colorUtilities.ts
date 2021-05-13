@@ -5,7 +5,13 @@ export interface colorSubtypeValue {
 	value: NonNullable<number>;
 }
 
-export type changeSource = 'wheel' | 'text' | 'slider' | 'component';
+export type changeSource =
+	| 'wheel'
+	| 'text'
+	| 'slider'
+	| 'component'
+	| 'text'
+	| 'color-circle';
 
 export type colorChangeExtended =
 	| {
