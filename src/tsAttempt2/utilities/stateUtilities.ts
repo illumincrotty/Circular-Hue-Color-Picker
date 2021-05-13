@@ -9,7 +9,7 @@ import {
 export abstract class subComponents {
 	abstract colorChangeHandler(input: colorChange): void;
 	abstract logState(): void;
-	abstract name: string;
+	abstract name: changeSource;
 }
 class PubSub<validParams> {
 	private eventSet: Set<(arg: validParams) => void> = new Set();
@@ -23,11 +23,7 @@ class PubSub<validParams> {
 	}
 
 	notify(event: validParams) {
-		console.log('notify called');
-		console.debug(event);
-		for (const fn of this.eventSet) {
-			fn(event);
-		}
+		return this.eventSet.forEach((fn) => fn(event));
 	}
 }
 
