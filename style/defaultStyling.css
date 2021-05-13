@@ -5,6 +5,11 @@
 		url('../../fonts/WOFF2/Atkinson-Hyperlegible-regular.WOFF')
 			format('woff');
 }
+@font-face {
+	font-family: Syne;
+	src: url('../fonts/Syne/Syne-Regular.woff2') format('woff2'),
+		url('../fonts/Syne/Syne-Regular.woff') format('woff');
+}
 
 :root {
 	font-family: Atkinson-Hyperlegible;

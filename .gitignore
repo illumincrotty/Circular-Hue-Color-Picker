@@ -2,9 +2,6 @@
 #==========
 .eslint*
 
-#typescript output
-dist/*
-
 #node
 package*.json
 
@@ -103,7 +100,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/

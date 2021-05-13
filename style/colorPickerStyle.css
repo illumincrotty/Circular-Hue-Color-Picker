@@ -1,5 +1,5 @@
 .colorPicker-component {
-	font-family: Atkinson-Hyperlegible;
+	font-family: inherit;
 	--alabaster: hsl(53, 15%, 88%);
 	--y-in-mn-blue: hsl(218, 19%, 22%);
 	--charcoal: hsl(220, 21%, 11%);
