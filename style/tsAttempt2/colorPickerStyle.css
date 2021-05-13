@@ -1,32 +1,61 @@
-:root {
+.colorPicker-component {
+	font-family: Atkinson-Hyperlegible;
+	--alabaster: hsl(53, 15%, 88%);
+	--y-in-mn-blue: hsl(218, 19%, 22%);
+	--charcoal: hsl(220, 21%, 11%);
+	--mauvelous: hsl(351, 56%, 73%);
+	--cadet-blue: hsl(187, 48%, 47%);
+
+	--darkGray: hsl(270, 1%, 13%);
+	--lightGray: hsl(270, 7%, 24%);
+	--brightPink: hsl(337, 71%, 60%);
+	--brightYellow: hsl(46, 75%, 55%);
+
 	--slate: hsl(210, 30%, 30%);
 	--darkSlate: hsl(210, 30%, 10%);
 	--brightPurple: hsl(271, 100%, 62%);
 	--brightBlue: hsl(210, 100%, 62%);
 
-	--Main: var(--darkSlate);
-	--Secondary: var(--slate);
-	--Accent: var(--brightPurple);
-	--SecondaryAccent: var(--brightBlue);
-	--text-color: whitesmoke;
+	--Main: var(--darkGray);
+	--Secondary: var(--lightGray);
+	--Accent: var(--brightPink);
+	--SecondaryAccent: var(--brightYellow);
+	--text-color: var(--alabaster);
 
 	color: var(--text-color);
 	line-height: 1.5;
-}
-
-.colorPicker-component {
+	box-sizing: border-box;
 	--colorPicker-width: 15rem;
 	--selectedColor: hsl(0, 0%, 50%);
 	background-color: var(--Main);
 	width: var(--colorPicker-width);
 	padding: 1rem;
+	border-radius: calc(var(--colorPicker-width) * 0.1);
+
+	box-shadow: 0rem 1rem 1.5rem -0.5rem var(--Main),
+		inset 0.5rem 0.5rem 1rem 1.5rem hsla(0, 0%, 100%, 0.02);
 }
+
+.colorPicker-component > * {
+	box-sizing: border-box;
+	width: calc(var(--colorPicker-width) * 0.9);
+	padding: 0;
+}
+
+.colorPicker-component * {
+	font-size: inherit;
+}
+
+/* .colorPicker-component > * + * {
+	margin-top: 1em;
+} */
 
 .colorPicker-container {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: space-around;
 	align-items: center;
+	gap: 0.5rem;
 }
 
 .colorPicker-colorWheel {
@@ -34,13 +63,13 @@
 	--radialSecondOpacity: 0%;
 	--lightness: 50%;
 	--colorWheelWidth: calc(var(--colorPicker-width) * 0.9);
+	cursor: pointer;
 
 	position: relative;
-	cursor: pointer;
 
 	border-radius: 50%;
 	border: calc(var(--colorWheelWidth) * 0.05) solid var(--Secondary);
-
+	box-shadow: 0rem 0rem 1rem hsla(0, 0%, 0%, 0.3);
 	width: var(--colorWheelWidth);
 	height: var(--colorWheelWidth);
 
@@ -67,21 +96,21 @@
 		);
 
 	filter: brightness(100%);
+	margin-top: 1px;
+	transform: translateZ(1px);
 }
 
 .colorPicker-handle {
-	/* pointer-events: none; */
 	cursor: grab;
 	--handleXOffset: 0;
 	--handleYOffset: 0;
 	--scaleFactor: 1;
 
-	--borderColor: var(--slate);
+	--borderColor: var(--Secondary);
 
-	--colorPickerHandleSize: calc(
-		var(--colorPicker-width) * 0.9 * 0.1
-	);
-	/* pointer-events: none; */
+	--colorPickerHandleSize: calc(var(--colorPicker-width) * 0.9 * 0.1);
+
+	box-shadow: 0rem 0rem 0.15rem hsla(0, 0%, 0%, 0.3);
 
 	top: 50%;
 	left: 50%;
@@ -94,14 +123,66 @@
 	position: absolute;
 
 	border-radius: 50%;
-	border: calc(var(--colorPickerHandleSize) * 0.15) solid
-		var(--borderColor);
+	border: calc(var(--colorPickerHandleSize) * 0.15) solid var(--borderColor);
 	background: var(--selectedColor);
 
 	width: var(--colorPickerHandleSize);
 	height: var(--colorPickerHandleSize);
 }
 
-.colorPicker-handle:active {
-	cursor: grabbing;
+.colorPicker-range {
+	color: inherit;
+	width: 100%;
+}
+.colorPicker-slider {
+	cursor: pointer;
+	outline: var(--Accent);
+}
+
+.colorPicker-slider:active,
+.colorPicker-slider:hover {
+	background-color: var(--SecondaryAccent);
+}
+
+.colorPicker-text-wrapper {
+	text-align: center;
+}
+.colorPicker-number-input {
+	font: inherit;
+	display: inline-block;
+	border: none;
+	margin-left: 0.25ch;
+	margin-right: 0.25ch;
+	background-color: transparent;
+	width: 2em;
+	text-align: right;
+	color: var(--text-color);
+	cursor: text;
+}
+
+.colorPicker-number-input:hover {
+	background-color: var(--Secondary);
+	outline: 1px solid var(--Accent);
+}
+
+.colorPicker-number-input:active,
+.colorPicker-number-input:focus,
+.colorPicker-number-input:focus-visible {
+	outline: 2px solid var(--Accent);
+	background-color: var(--Secondary);
+}
+
+.colorPicker-component button {
+	color: inherit;
+	font: inherit;
+	background-color: var(--Main);
+	border-color: var(--text-color);
+	border-radius: 1em;
+}
+.colorPicker-component button:hover,
+colorPicker-component button:active,
+colorPicker-component button:focus {
+	color: var(--Accent);
+	background-color: var(--Secondary);
+	border-color: var(--Accent);
 }
