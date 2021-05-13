@@ -1,6 +1,44 @@
+.colorPicker-pre {
+	width: 6rem;
+	height: 6rem;
+	border-radius: 25%;
+	position: relative;
+
+	background: radial-gradient(
+			circle closest-side,
+			hsla(0, 0%, 50%, 1),
+			hsla(0, 0%, 50%, 0)
+		),
+		conic-gradient(
+			hsl(0, 100%, 50%),
+			hsl(30, 100%, 50%),
+			hsl(60, 100%, 50%),
+			hsl(90, 100%, 50%),
+			hsl(120, 100%, 50%),
+			hsl(150, 100%, 50%),
+			hsl(180, 100%, 50%),
+			hsl(210, 100%, 50%),
+			hsl(240, 100%, 50%),
+			hsl(270, 100%, 50%),
+			hsl(300, 100%, 50%),
+			hsl(330, 100%, 50%),
+			hsl(360, 100%, 50%)
+		);
+
+	border: 0.2rem solid hsla(0, 0%, 20%, 1);
+	box-shadow: 0 0 0.5rem hsla(0, 0%, 0%, 0.3);
+}
+
+.colorPicker-pre:hover {
+	border-color: white;
+}
+
 .colorPicker-component {
 	font-family: inherit;
-	--alabaster: hsl(53, 15%, 88%);
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	--alabaster: hsl(53, 20%, 80%);
 	--y-in-mn-blue: hsl(218, 19%, 22%);
 	--charcoal: hsl(220, 21%, 11%);
 	--mauvelous: hsl(351, 56%, 73%);
@@ -34,6 +72,17 @@
 
 	box-shadow: 0rem 1rem 1.5rem -0.5rem var(--Main),
 		inset 0.5rem 0.5rem 1rem 1.5rem hsla(0, 0%, 100%, 0.02);
+}
+
+.m-fadeOut {
+	visibility: hidden;
+	opacity: 0;
+	transition: visibility 0s linear 300ms, opacity 300ms;
+}
+.m-fadeIn {
+	visibility: visible;
+	opacity: 1;
+	transition: visibility 0s linear 0s, opacity 300ms;
 }
 
 .colorPicker-component > * {
@@ -130,6 +179,59 @@
 	cursor: grabbing;
 }
 
+.colorPicker-circle {
+	--circle-color: hsl(0, 0%, 50%);
+	cursor: pointer;
+	border-radius: 50%;
+	padding: 0;
+	background: transparent;
+	border: calc(var(--circle-Size) * 0.1) solid var(--Secondary);
+	box-shadow: 0rem 0rem 1rem hsla(0, 0%, 0%, 0.3);
+	transform: translateZ(1px);
+}
+
+.colorPicker-circle-dynamic {
+	background-color: var(--circle-color);
+	width: var(--circle-Size);
+	height: var(--circle-Size);
+}
+
+.colorPicker-circle-dynamic:hover,
+.colorPicker-circle-dynamic:focus {
+	border-color: var(--Accent);
+}
+.colorPicker-circle-dynamic:focus:active {
+	border-color: var(--SecondaryAccent);
+}
+
+.colorPicker-svg-button-wrap {
+	border: none;
+	fill: var(--Accent);
+}
+
+.colorPicker-wheel-button {
+	position: absolute;
+	width: calc(var(--colorPicker-width) * 0.1);
+	height: calc(var(--colorPicker-width) * 0.1);
+	bottom: 0;
+	transform: translate(25%, 25%);
+}
+
+.colorPicker-svg-button {
+	fill: inherit;
+}
+.colorPicker-svg-button-wrap:hover {
+	fill: var(--SecondaryAccent);
+}
+
+.colorPicker-svg-button-wrap:active {
+	fill: var(--Secondary);
+}
+.colorPicker-svg-button-wrap:disabled {
+	cursor: default;
+	fill: var(--Secondary);
+}
+
 .colorPicker-range {
 	color: inherit;
 	width: 100%;
@@ -137,11 +239,6 @@
 .colorPicker-slider {
 	cursor: pointer;
 	outline: var(--Accent);
-}
-
-.colorPicker-slider:active,
-.colorPicker-slider:hover {
-	background-color: var(--SecondaryAccent);
 }
 
 .colorPicker-text-wrapper {
@@ -166,23 +263,25 @@
 }
 
 .colorPicker-number-input:active,
-.colorPicker-number-input:focus,
-.colorPicker-number-input:focus-visible {
-	outline: 2px solid var(--Accent);
+.colorPicker-number-input:focus {
+	outline: 2px solid var(--SecondaryAccent);
 	background-color: var(--Secondary);
 }
 
-.colorPicker-component button {
+/* after this will be removed */
+.colorPicker-testing-button {
 	color: inherit;
 	font: inherit;
 	background-color: var(--Main);
 	border-color: var(--text-color);
 	border-radius: 1em;
 }
-.colorPicker-component button:hover,
-colorPicker-component button:active,
-colorPicker-component button:focus {
+.colorPicker-testing-button:hover,
+.colorPicker-testing-button:focus {
 	color: var(--Accent);
 	background-color: var(--Secondary);
 	border-color: var(--Accent);
+}
+.colorPicker-testing-button:active {
+	border-color: var(--SecondaryAccent);
 }

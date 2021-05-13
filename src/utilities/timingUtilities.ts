@@ -1,6 +1,4 @@
-export const debounce = <
-	fn extends (...args: never[]) => never | void
->(
+export const debounce = <fn extends (...args: never[]) => never | void>(
 	callback: fn,
 	wait: number
 ): ((...args: Parameters<fn>) => void) => {
@@ -16,9 +14,7 @@ export const debounce = <
 	};
 };
 
-export const throttle = <
-	fn extends (...args: never[]) => never | void
->(
+export const throttle = <fn extends (...args: never[]) => never | void>(
 	callback: fn,
 	wait: number
 ): ((...args: Parameters<fn>) => void) => {

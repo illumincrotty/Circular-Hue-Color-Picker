@@ -7,10 +7,12 @@ import { colorWheel } from './wheel.js';
 import { sliders } from './slider.js';
 import { debounce } from './utilities/timingUtilities.js';
 import { textInput } from './text.js';
+import { colorCircle } from './colorCircles.js';
 export { colorPickerComponent };
 
 class colorPickerComponent {
 	static componentCount = -1;
+	static debug = false;
 
 	name = 'component';
 	id: number;
@@ -25,43 +27,66 @@ class colorPickerComponent {
 		this.component = document.createElement('div');
 		this.component.classList.add(
 			'colorPicker-component',
-			'colorPicker-container'
+			'colorPicker-container',
+			'm-fadeOut'
 		);
 		window.addEventListener('resize', this.resize.bind(this));
 
 		//add Subcomponenets
 		this.subComponents.push(new colorWheel(this.component));
+		this.subComponents.push(new colorCircle(this.component));
 		this.subComponents.push(new sliders(this.component, this.id));
 		this.subComponents.push(new textInput(this.component));
 
 		//#region testing
 		//add temporary testing componenets
-		const addColorButton = document.createElement('button');
-		addColorButton.textContent = 'Add';
-		addColorButton.addEventListener('click', () => {
-			emitSelectedChange('new');
-		});
+		if (colorPickerComponent.debug) {
+			const addColorButton = document.createElement('button');
+			addColorButton.classList.add('colorPicker-testing-button');
+			addColorButton.textContent = 'Add';
+			addColorButton.addEventListener('click', () => {
+				emitSelectedChange('new');
+			});
 
-		const remColorButton = document.createElement('button');
-		remColorButton.textContent = 'Remove';
-		remColorButton.addEventListener('click', () => {
-			emitSelectedChange('delete');
-		});
-		const stateLog = document.createElement('button');
-		stateLog.textContent = 'Log State';
-		stateLog.addEventListener('click', this.logState);
+			const remColorButton = document.createElement('button');
+			remColorButton.classList.add('colorPicker-testing-button');
+			remColorButton.textContent = 'Remove';
+			remColorButton.addEventListener('click', () =>
+				emitSelectedChange('delete')
+			);
 
-		this.component.appendChild(stateLog);
-		this.component.appendChild(addColorButton);
-		this.component.appendChild(remColorButton);
-		// this.text = new text(this.component);
+			const stateLog = document.createElement('button');
+			stateLog.classList.add('colorPicker-testing-button');
+			stateLog.textContent = 'Log State';
+			stateLog.addEventListener('mousedown', this.logState);
+
+			this.component.appendChild(stateLog);
+			this.component.appendChild(addColorButton);
+			this.component.appendChild(remColorButton);
+		}
 		//#endregion testing
 
-		parentElement.appendChild(this.component);
+		const pre = document.createElement('button');
+		pre.classList.add('colorPicker-pre');
+		pre.append(this.component);
+
+		document.onclick = (e) => {
+			if (e.target instanceof HTMLElement) {
+				if (e.target === pre) {
+					this.component.classList.remove('m-fadeOut');
+				} else {
+					this.component.classList.add('m-fadeOut');
+				}
+			}
+		};
+
+		this.component.onclick = (e) => {
+			e.stopPropagation();
+		};
+
+		parentElement.parentElement?.replaceChild(pre, parentElement);
 		emitSelectedChange('new');
-		while (this.component.clientWidth < 20) {
-			this.resize();
-		}
+		// this.component.style.visibility = 'hidden';
 	}
 
 	//#region non constructor functions
@@ -73,6 +98,7 @@ class colorPickerComponent {
 			element.logState();
 			console.groupEnd();
 		});
+		this.component.focus();
 	};
 
 	undebouncedResize = (): void => {

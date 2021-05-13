@@ -15,11 +15,44 @@ class colorWheel extends subComponents {
             y: -1,
         };
         this.name = 'wheel';
+        this.addAndRemoveColorButton = () => {
+            this.addColor = document.createElement('button');
+            this.addColor.classList.add('colorPicker-circle', 'colorPicker-svg-button-wrap', 'colorPicker-wheel-button');
+            const svgAdd = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svgAdd.setAttribute('role', 'img');
+            svgAdd.setAttribute('viewBox', '0 0 24 24');
+            svgAdd.style.fillRule = 'evenodd';
+            svgAdd.style.clipRule = 'evenodd';
+            svgAdd.classList.add('colorPicker-svg-button');
+            svgAdd.innerHTML = `<path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12S0 18.623 0 12 5.377 0 12 0zm0 2.767c5.096 0 9.233 4.137 9.233 9.233 0 5.096-4.137 9.233-9.233 9.233-5.096 0-9.233-4.137-9.233-9.233 0-5.096 4.137-9.233 9.233-9.233z"/><path d="M10.5 10.5V6.9a1.5 1.5 0 013 0v.01-.01 3.6h3.6a1.5 1.5 0 010 3h-.01.01-3.6v3.6a1.5 1.5 0 01-3 0v-.01.01-3.6H6.9a1.5 1.5 0 010-3h.01-.01 3.6z"/>`;
+            this.addColor.append(svgAdd);
+            this.addColor.style.right = '0';
+            this.remColor = document.createElement('button');
+            this.remColor.classList.add('colorPicker-circle', 'colorPicker-svg-button-wrap', 'colorPicker-wheel-button');
+            const svgRemove = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svgRemove.setAttribute('role', 'img');
+            svgRemove.setAttribute('viewBox', '0 0 24 24');
+            svgRemove.style.fillRule = 'evenodd';
+            svgRemove.style.clipRule = 'evenodd';
+            svgRemove.classList.add('colorPicker-svg-button');
+            svgRemove.innerHTML = `<path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12S0 18.623 0 12 5.377 0 12 0zm0 2.767c5.096 0 9.233 4.137 9.233 9.233 0 5.096-4.137 9.233-9.233 9.233-5.096 0-9.233-4.137-9.233-9.233 0-5.096 4.137-9.233 9.233-9.233zM6.9 10.5h10.2c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5h-.01.01H6.9c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5h.01-.01z"/>`;
+            this.remColor.append(svgRemove);
+            this.remColor.style.left = '0';
+            this.remColor.style.transform = 'translate(-25%,25%)';
+            this.remColor.disabled = true;
+            this.wheel.prepend(this.remColor);
+            this.wheel.appendChild(this.addColor);
+        };
         //#region event listener implementation
         this.down = (e) => {
             e.stopImmediatePropagation();
             //if dimensions have not been set, set them
             this.setDimensions();
+            //If add or remove button clicked, do nothing (handled in click method)
+            if (e.target instanceof SVGElement ||
+                e.target instanceof HTMLButtonElement) {
+                return;
+            }
             /*if the element clicked was not the wheel or the current handle,
             it must be another handle, so change handles*/
             if (e.target !== this.wheel &&
@@ -45,6 +78,19 @@ class colorWheel extends subComponents {
             this.handles[this.selectedHandle].moving(e);
         };
         this.click = (e) => {
+            //if add or remove button is clicked
+            if (e.target instanceof SVGElement ||
+                e.target instanceof HTMLButtonElement) {
+                const target = e.target.closest('.colorPicker-circle');
+                if (target === this.addColor) {
+                    emitSelectedChange('new');
+                    return;
+                }
+                if (target === this.remColor) {
+                    emitSelectedChange('delete');
+                    return;
+                }
+            }
             this.handles[this.selectedHandle].click(e);
             e.preventDefault();
             e.stopImmediatePropagation();
@@ -95,6 +141,7 @@ class colorWheel extends subComponents {
         this.wheel.addEventListener('mousemove', this.moving);
         this.wheel.addEventListener('mousedown', this.down);
         this.wheel.addEventListener('click', this.click);
+        this.addAndRemoveColorButton();
         //#endregion click listeners
         // #region touch listeners
         // if (this.touchEnabled) {
@@ -146,6 +193,12 @@ class colorWheel extends subComponents {
     }
     addHandle() {
         this.handles.push(new handle(this.wheel, this.handles.length));
+        if (this.handles.length >= 2) {
+            this.remColor.disabled = false;
+        }
+        if (this.handles.length >= 5) {
+            this.addColor.disabled = true;
+        }
     }
     removeHandle(index) {
         var _a;
@@ -158,6 +211,12 @@ class colorWheel extends subComponents {
             this.handles.slice(index).forEach((item) => {
                 item.id -= 1;
             });
+            if (this.handles.length <= 1) {
+                this.remColor.disabled = true;
+            }
+            if (this.handles.length <= 4) {
+                this.addColor.disabled = false;
+            }
         }
     }
     colorChangeHandler(change) {
@@ -171,10 +230,9 @@ class colorWheel extends subComponents {
         }
     }
     resize() {
-        console.debug('Wheel Resize');
         this.setDimensions(true);
         this.handles.forEach((element) => {
-            console.debug('Handle Resize');
+            // console.debug('Handle Resize');
             element.setDimensions(this.wheel, true);
         });
     }
