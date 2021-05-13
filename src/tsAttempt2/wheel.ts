@@ -1,5 +1,5 @@
 import { handle } from './handle.js';
-import { colorChange } from './utilities/colorUtilities.js';
+import { changeSource, colorChange } from './utilities/colorUtilities.js';
 import {
 	colorStateManger,
 	emitSelectedChange,
@@ -21,7 +21,7 @@ class colorWheel extends subComponents {
 		x: -1,
 		y: -1,
 	};
-	name = 'wheel';
+	name = 'wheel' as changeSource;
 
 	//#endregion class variables
 
@@ -30,12 +30,8 @@ class colorWheel extends subComponents {
 		this.wheel = document.createElement('div');
 		this.wheel.classList.add('colorPicker-colorWheel');
 
-		selectedStateManger.subscribe(
-			this.selectionHandler.bind(this)
-		);
-		colorStateManger.subscribe(
-			this.colorChangeHandler.bind(this)
-		);
+		selectedStateManger.subscribe(this.selectionHandler.bind(this));
+		colorStateManger.subscribe(this.colorChangeHandler.bind(this));
 		resizeAlert.subscribe(this.resize.bind(this));
 
 		//#region event listeners
@@ -80,13 +76,13 @@ class colorWheel extends subComponents {
 				this.dimensions.radius +
 				this.wheel.clientTop +
 				this.wheel.offsetTop;
-			console.debug('Wheel Dimensions');
-			console.debug(this.dimensions);
 		}
 	}
 
 	//#region event listener implementation
 	private down = (e: MouseEvent) => {
+		e.stopImmediatePropagation();
+
 		//if dimensions have not been set, set them
 		this.setDimensions();
 
@@ -96,9 +92,7 @@ class colorWheel extends subComponents {
 			e.target !== this.wheel &&
 			e.target !== this.handles[this.selectedHandle].handle
 		) {
-			const newSelected = this.findHandle(
-				e.target as HTMLElement
-			);
+			const newSelected = this.findHandle(e.target as HTMLElement);
 			emitSelectedChange(newSelected);
 
 			if (newSelected === -1) {
@@ -125,6 +119,8 @@ class colorWheel extends subComponents {
 
 	private click = (e: MouseEvent) => {
 		this.handles[this.selectedHandle].click(e);
+		e.preventDefault();
+		e.stopImmediatePropagation();
 	};
 	// private touchMoving = (e: TouchEvent) => {
 	// 	this.handles[this.selectedHandle].touchMoving(e);
@@ -150,10 +146,7 @@ class colorWheel extends subComponents {
 	}
 
 	addHandle(): void {
-		console.log('Adding Handle');
-		this.handles.push(
-			new handle(this.wheel, this.handles.length)
-		);
+		this.handles.push(new handle(this.wheel, this.handles.length));
 	}
 
 	removeHandle(index: number): void {
@@ -162,7 +155,7 @@ class colorWheel extends subComponents {
 			this.handles[index]?.remove();
 
 			//remove from array
-			console.log(this.handles.splice(index, 1));
+			this.handles.splice(index, 1);
 
 			//decrement all following ID's
 			this.handles.slice(index).forEach((item) => {
@@ -195,15 +188,12 @@ class colorWheel extends subComponents {
 			return selected;
 		}
 		if (input instanceof HTMLElement) {
-			const selected = this.handles.reduce(
-				(value, current, index) => {
-					if (current.handle === input) {
-						return index;
-					}
-					return value;
-				},
-				-1
-			);
+			const selected = this.handles.reduce((value, current, index) => {
+				if (current.handle === input) {
+					return index;
+				}
+				return value;
+			}, -1);
 			return selected;
 		}
 		return -1;
@@ -211,9 +201,10 @@ class colorWheel extends subComponents {
 
 	colorChangeHandler(change: colorChange): void {
 		this.setDimensions();
-		if (this.selectedHandle > 0) {
+		if (this.selectedHandle >= 0) {
 			this.handles[this.selectedHandle].setDimensions(
-				this.wheel
+				this.wheel,
+				this.handles[this.selectedHandle].dimensions.functionalRad < 1
 			);
 		}
 		if (change?.source !== 'wheel') {
@@ -222,9 +213,7 @@ class colorWheel extends subComponents {
 				`${change.color.lightness}%`
 			);
 
-			this.handles[this.selectedHandle].updateFromColor(
-				change.color
-			);
+			this.handles[this.selectedHandle].updateFromColor(change.color);
 		}
 	}
 
