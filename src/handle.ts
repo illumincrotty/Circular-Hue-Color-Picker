@@ -83,9 +83,10 @@ class handle {
 		this.active = false;
 	};
 
-	down = (parentElement: HTMLElement): void => {
+	down = (parentElement: HTMLElement, e: MouseEvent): void => {
 		this.setDimensions(parentElement, this.dimensions.functionalRad < 1);
 		this.active = true;
+		this.click(e);
 	};
 
 	click = (e: MouseEvent): void => {

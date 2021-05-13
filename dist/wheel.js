@@ -31,7 +31,7 @@ class colorWheel extends subComponents {
                 }
             }
             // console.debug(e);
-            this.handles[this.selectedHandle].down(this.wheel);
+            this.handles[this.selectedHandle].down(this.wheel, e);
         };
         this.up = () => {
             this.handles[this.selectedHandle].up();

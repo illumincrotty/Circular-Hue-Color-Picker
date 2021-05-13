@@ -46,10 +46,6 @@
 	font-size: inherit;
 }
 
-/* .colorPicker-component > * + * {
-	margin-top: 1em;
-} */
-
 .colorPicker-container {
 	display: flex;
 	flex-direction: column;
@@ -108,7 +104,7 @@
 
 	--borderColor: var(--Secondary);
 
-	--colorPickerHandleSize: calc(var(--colorPicker-width) * 0.9 * 0.1);
+	--colorPickerHandleSize: calc(var(--colorPicker-width) * 0.9 * 0.12);
 
 	box-shadow: 0rem 0rem 0.15rem hsla(0, 0%, 0%, 0.3);
 
@@ -128,6 +124,10 @@
 
 	width: var(--colorPickerHandleSize);
 	height: var(--colorPickerHandleSize);
+}
+
+.colorPicker-handle:active {
+	cursor: grabbing;
 }
 
 .colorPicker-range {

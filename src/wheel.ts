@@ -100,7 +100,7 @@ class colorWheel extends subComponents {
 			}
 		}
 		// console.debug(e);
-		this.handles[this.selectedHandle].down(this.wheel);
+		this.handles[this.selectedHandle].down(this.wheel, e);
 	};
 
 	private up = () => {

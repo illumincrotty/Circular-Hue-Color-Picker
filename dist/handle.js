@@ -29,9 +29,10 @@ class handle {
         this.up = () => {
             this.active = false;
         };
-        this.down = (parentElement) => {
+        this.down = (parentElement, e) => {
             this.setDimensions(parentElement, this.dimensions.functionalRad < 1);
             this.active = true;
+            this.click(e);
         };
         this.click = (e) => {
             const x = e.clientX - this.dimensions.bcrX;
