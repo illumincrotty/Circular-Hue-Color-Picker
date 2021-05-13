@@ -1,22 +1,42 @@
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TypeScript Attempt 2 (hopefully less naive)</title>
-    <link rel="shortcut icon" href="./images/favicon.png" type="image/x-icon" />
-    <link
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta
+			name="description"
+			content="A dependency free typescript hue color picker"
+		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>TypeScript Attempt 2 (hopefully less naive)</title>
+		<link
+			rel="shortcut icon"
+			href="./images/favicon.png"
+			type="image/x-icon"
+		/>
+		<!-- <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
       integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
       crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="./style/tsAttempt2/defaultStyling.css" />
+    /> -->
+		<link
+			rel="prefetch"
+			as="stylesheet"
+			href="node_modules/modern-normalize/modern-normalize.css"
+		/>
+		<link rel="stylesheet" href="./style/tsAttempt2/defaultStyling.css" />
+		<link
+			rel="prefetch"
+			as="style"
+			href="./style/tsAttempt2/colorPickerStyle.css"
+		/>
 
-    <script type="module" src="./dist/tsAttempt2/runner.js"></script>
-  </head>
+		<script type="module" src="./dist/tsAttempt2/runner.js"></script>
+	</head>
 
-  <body>
-    <div class="colorPicker-app" id="colorPicker-app"></div>
-  </body>
+	<body>
+		<div class="colorPicker-app" id="colorPicker-app"></div>
+		<div class="colorCompare"></div>
+	</body>
 </html>
