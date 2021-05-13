@@ -43,6 +43,7 @@ class handle {
 		//create element and add its class
 		this.handle = document.createElement('div');
 		this.handle.classList.add('colorPicker-handle');
+		// this.handle.tabIndex = 0;
 		this.id = idNumber;
 		this.select();
 
@@ -65,17 +66,15 @@ class handle {
 			this.dimensions.offset = wheelDimensions.width / 2;
 			this.dimensions.functionalRad =
 				wheelDimensions.width / 2 -
-				this.dimensions.wheelBorder -
-				(handleDimensions.width / 2 - this.dimensions.handleBorder);
+					this.dimensions.wheelBorder -
+					(handleDimensions.width / 2 -
+						this.dimensions.handleBorder) ?? 0;
 			this.dimensions.bcrX = wheelDimensions.x;
 			this.dimensions.bcrY = wheelDimensions.y;
-
-			console.debug(this.dimensions);
 		}
 	}
 
 	remove = (): void => {
-		console.debug('Removing Self');
 		this.handle.remove();
 	};
 
@@ -85,7 +84,7 @@ class handle {
 	};
 
 	down = (parentElement: HTMLElement): void => {
-		this.setDimensions(parentElement);
+		this.setDimensions(parentElement, this.dimensions.functionalRad < 1);
 		this.active = true;
 	};
 
@@ -120,6 +119,7 @@ class handle {
 	//#endregion event listener implementation
 
 	select = (): void => {
+		this.handle.focus();
 		this.handle.style.setProperty('--scaleFactor', `1.2`);
 		this.handle.style.setProperty('--borderColor', `var(--Main)`);
 	};
@@ -154,11 +154,12 @@ class handle {
 
 	colorToPolarCoordinates = (color: hsl_color): polarPt => {
 		return {
-			theta: degreesToRadians(color.hue - 90),
-			radius: Math.min(
-				(color.saturation / 100) * this.dimensions.functionalRad,
-				this.dimensions.functionalRad
-			),
+			theta: degreesToRadians(color.hue - 90) ?? 0,
+			radius:
+				Math.min(
+					(color.saturation / 100) * this.dimensions.functionalRad,
+					this.dimensions.functionalRad
+				) ?? 0,
 		};
 	};
 
@@ -167,8 +168,8 @@ class handle {
 			hue: (radiansToDegrees(pt.theta) + 360 + 90) % 360,
 			saturation:
 				100 *
-				(Math.min(pt.radius, this.dimensions.functionalRad) /
-					this.dimensions.functionalRad),
+					(Math.min(pt.radius, this.dimensions.functionalRad) /
+						this.dimensions.functionalRad) || 0,
 			lightness: this.color.lightness,
 		};
 	};
