@@ -19,10 +19,7 @@ class sliders extends subComponents {
 	constructor(parentElement: HTMLElement, id: number) {
 		super();
 		this.sliderWrapper = document.createElement('div');
-		this.sliderWrapper.classList.add(
-			'colorPicker-container',
-			'colorPicker-component'
-		);
+		this.sliderWrapper.classList.add('colorPicker-container');
 		parentElement.appendChild(this.sliderWrapper);
 
 		colorStateManger.subscribe(this.colorChangeHandler.bind(this));
@@ -84,8 +81,7 @@ class range {
 		this.default = options.default;
 
 		const wrapper = document.createElement('div');
-		wrapper.style.width = '90%';
-		wrapper.style.marginBottom = '5%';
+		wrapper.classList.add('colorPicker-range');
 		const label = document.createElement('label');
 		const capitalLabel =
 			options.name[0].toUpperCase() + options.name.slice(1);
@@ -102,6 +98,7 @@ class range {
 		this.input.setAttribute('value', `${options.default}`);
 		this.input.id = `colorPicker-${capitalLabel}-slider-${id}`;
 		this.input.style.width = '100%';
+		this.input.classList.add('colorPicker-slider');
 
 		this.input.addEventListener('input', () => {
 			emitColorChange({
@@ -110,6 +107,7 @@ class range {
 					type: options.name,
 					value: parseFloat(this.input.value),
 				},
+				source: 'slider',
 			} as colorChangeExtended);
 		});
 		wrapper.appendChild(this.input);
