@@ -6,6 +6,7 @@ import {
 import { colorWheel } from './wheel.js';
 import { sliders } from './slider.js';
 import { debounce } from './utilities/timingUtilities.js';
+import { textInput } from './text.js';
 export { colorPickerComponent };
 
 class colorPickerComponent {
@@ -26,12 +27,12 @@ class colorPickerComponent {
 			'colorPicker-component',
 			'colorPicker-container'
 		);
-		parentElement.appendChild(this.component);
 		window.addEventListener('resize', this.resize.bind(this));
 
 		//add Subcomponenets
 		this.subComponents.push(new colorWheel(this.component));
 		this.subComponents.push(new sliders(this.component, this.id));
+		this.subComponents.push(new textInput(this.component));
 
 		//#region testing
 		//add temporary testing componenets
@@ -56,7 +57,11 @@ class colorPickerComponent {
 		// this.text = new text(this.component);
 		//#endregion testing
 
+		parentElement.appendChild(this.component);
 		emitSelectedChange('new');
+		while (this.component.clientWidth < 20) {
+			this.resize();
+		}
 	}
 
 	//#region non constructor functions
