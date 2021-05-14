@@ -76,7 +76,7 @@ class colorCircle extends subComponents {
 
 	private deselect = (index: number) => {
 		if (index >= 0 && index < this.circleList.length) {
-			this.circleList[index].style.borderColor = 'var(--Secondary)';
+			this.circleList[index].style.removeProperty('border-color');
 		}
 		return;
 	};

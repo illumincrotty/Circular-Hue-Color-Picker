@@ -32,7 +32,7 @@ class colorCircle extends subComponents {
         };
         this.deselect = (index) => {
             if (index >= 0 && index < this.circleList.length) {
-                this.circleList[index].style.borderColor = 'var(--Secondary)';
+                this.circleList[index].style.removeProperty('border-color');
             }
             return;
         };
