@@ -171,6 +171,8 @@ class colorWheel extends subComponents {
 	};
 
 	private moving = (e: MouseEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
 		this.handles[this.selectedHandle].moving(e);
 	};
 
@@ -190,6 +192,7 @@ class colorWheel extends subComponents {
 				emitSelectedChange('delete');
 				return;
 			}
+			return;
 		}
 		this.handles[this.selectedHandle].click(e);
 		e.preventDefault();

@@ -79,11 +79,6 @@
 	opacity: 0;
 	transition: visibility 0s linear 300ms, opacity 300ms;
 }
-.m-fadeIn {
-	visibility: visible;
-	opacity: 1;
-	transition: visibility 0s linear 0s, opacity 300ms;
-}
 
 .colorPicker-component > * {
 	box-sizing: border-box;
@@ -230,6 +225,7 @@
 .colorPicker-svg-button-wrap:disabled {
 	cursor: default;
 	fill: var(--Secondary);
+	background: hsla(0, 0%, 0%, 0) !important;
 }
 
 .colorPicker-range {

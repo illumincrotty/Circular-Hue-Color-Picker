@@ -82,6 +82,7 @@ class colorPickerComponent {
 
 		this.component.onclick = (e) => {
 			e.stopPropagation();
+			e.preventDefault();
 		};
 
 		parentElement.parentElement?.replaceChild(pre, parentElement);

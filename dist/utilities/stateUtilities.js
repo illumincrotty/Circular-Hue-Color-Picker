@@ -21,9 +21,11 @@ export const resizeAlert = new PubSub();
 export const emitSelectedChange = (input) => {
     if (typeof input == 'string') {
         if (input === 'new') {
-            currentSelectedIndex = colors.push(defaultColor()) - 1;
-            selectedStateManger.notify('new');
-            selectedStateManger.notify(colors.length - 1);
+            if (colors.length < 5) {
+                currentSelectedIndex = colors.push(defaultColor()) - 1;
+                selectedStateManger.notify('new');
+                selectedStateManger.notify(colors.length - 1);
+            }
         }
         if (input === 'delete') {
             if (colors.length > 1) {

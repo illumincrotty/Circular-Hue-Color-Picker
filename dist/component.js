@@ -74,6 +74,7 @@ class colorPickerComponent {
         };
         this.component.onclick = (e) => {
             e.stopPropagation();
+            e.preventDefault();
         };
         (_a = parentElement.parentElement) === null || _a === void 0 ? void 0 : _a.replaceChild(pre, parentElement);
         emitSelectedChange('new');

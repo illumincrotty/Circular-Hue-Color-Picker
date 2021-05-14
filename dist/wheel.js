@@ -75,6 +75,8 @@ class colorWheel extends subComponents {
             }
         };
         this.moving = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             this.handles[this.selectedHandle].moving(e);
         };
         this.click = (e) => {
@@ -90,6 +92,7 @@ class colorWheel extends subComponents {
                     emitSelectedChange('delete');
                     return;
                 }
+                return;
             }
             this.handles[this.selectedHandle].click(e);
             e.preventDefault();
