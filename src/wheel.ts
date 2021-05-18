@@ -3,6 +3,7 @@ import { changeSource, colorChange } from './utilities/colorUtilities.js';
 import {
 	colorStateManger,
 	emitSelectedChange,
+	numberOfColorsAlert,
 	resizeAlert,
 	selectedStateManger,
 	subComponents,
@@ -24,6 +25,7 @@ class colorWheel extends subComponents {
 	name = 'wheel' as changeSource;
 	addColor!: HTMLButtonElement;
 	remColor!: HTMLButtonElement;
+	maxColors = 5;
 
 	//#endregion class variables
 
@@ -35,6 +37,7 @@ class colorWheel extends subComponents {
 		selectedStateManger.subscribe(this.selectionHandler.bind(this));
 		colorStateManger.subscribe(this.colorChangeHandler.bind(this));
 		resizeAlert.subscribe(this.resize.bind(this));
+		numberOfColorsAlert.subscribe(this.maxHandler.bind(this));
 
 		//#region event listeners
 		//#region click listeners
@@ -206,7 +209,7 @@ class colorWheel extends subComponents {
 
 	selectionHandler(input: number | 'new' | 'delete'): void {
 		if (typeof input === 'number') {
-			this.deslectHandle(this.selectedHandle);
+			this.deselectHandle(this.selectedHandle);
 			this.selectedHandle = input;
 			this.selectHandle(input);
 		} else {
@@ -226,7 +229,7 @@ class colorWheel extends subComponents {
 		if (this.handles.length >= 2) {
 			this.remColor.disabled = false;
 		}
-		if (this.handles.length >= 5) {
+		if (this.handles.length >= this.maxColors) {
 			this.addColor.disabled = true;
 		}
 	}
@@ -247,13 +250,13 @@ class colorWheel extends subComponents {
 			if (this.handles.length <= 1) {
 				this.remColor.disabled = true;
 			}
-			if (this.handles.length <= 4) {
+			if (this.handles.length <= this.maxColors - 1) {
 				this.addColor.disabled = false;
 			}
 		}
 	}
 
-	deslectHandle = (index: number): void => {
+	deselectHandle = (index: number): void => {
 		if (this.handles[this.selectedHandle] !== undefined) {
 			this.handles[index].deselect();
 
@@ -312,5 +315,9 @@ class colorWheel extends subComponents {
 			// console.debug('Handle Resize');
 			element.setDimensions(this.wheel, true);
 		});
+	}
+
+	maxHandler(input: number): void {
+		this.maxColors = input;
 	}
 }
