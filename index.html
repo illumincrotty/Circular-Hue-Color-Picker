@@ -2,7 +2,6 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta
 			name="description"
 			content="A dependency free typescript hue color picker"
@@ -16,18 +15,17 @@
 		/>
 		<link
 			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/0.2.0/modern-normalize.min.css"
-			integrity="sha512-sqIVMkf5f8XGYI/UZYGs7wODxlUeoj9JknataPfUwtvrSKWMHrMXGZ7Evb6nabFYJQG15vFFyALe6r0nWCD1Ug=="
+			href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.0.0/modern-normalize.min.css"
+			integrity="sha512-ISS7cAi1PEhQ8jnbJpJZMd29NlhNj4AWYyLOSp2CE/CsHxTCu+r+t0D2yoJudVrd0/8fTVPUVDzY5Tvli75u/g=="
 			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
 		/>
-		<link rel="stylesheet" href="./style/defaultStyling.css" />
+		<link rel="stylesheet" defer href="./style/defaultStyling.css" />
 
-		<script type="module" src="./dist/colorPicker.js"></script>
+		<script type="module" defer src="./dist/index.js"></script>
 	</head>
 
 	<body>
-		<color-picker></color-picker>
-		<!-- <div class="colorPicker-app" id="colorPicker-app"></div> -->
-		<!-- <div class="colorCompare"></div> -->
+		<color-picker standalone></color-picker>
 	</body>
 </html>
