@@ -1,3 +1,9 @@
 # Typescript Hue Color Picker
 
-A hue color picker written in Typescript. No dependencies.
+<img src = './logo.png' width = 100 height = 100></img>
+
+-------
+
+<!-- badges -->
+
+A hue color picker written in TypeScript with no dependencies.
