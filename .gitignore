@@ -2,6 +2,8 @@
 #==========
 .eslint*
 
+dist
+
 #node
 package*.json
 

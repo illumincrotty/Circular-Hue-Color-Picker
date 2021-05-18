@@ -15,7 +15,7 @@ class colorWheel extends subComponents {
 	wheel: HTMLElement;
 	private selectedHandle = -1;
 	handles: handle[] = [];
-	touchEnabled = false;
+	touchEnabled = true;
 	dimensions = {
 		radius: -1,
 		x: -1,
@@ -50,11 +50,11 @@ class colorWheel extends subComponents {
 		//#endregion click listeners
 
 		// #region touch listeners
-		// if (this.touchEnabled) {
-		// 	this.wheel.addEventListener('touchstart', this.down);
-		// 	this.wheel.addEventListener('touchmove', this.touchMoving);
-		// 	this.wheel.addEventListener('touchend', this.up);
-		// }
+		if (this.touchEnabled) {
+			this.wheel.addEventListener('touchstart', this.down);
+			this.wheel.addEventListener('touchmove', this.touchMoving);
+			this.wheel.addEventListener('touchend', this.up);
+		}
 		//#endregion touch listeners
 		//#endregion event listeners
 
@@ -129,7 +129,7 @@ class colorWheel extends subComponents {
 	}
 
 	//#region event listener implementation
-	private down = (e: MouseEvent) => {
+	private down = (e: MouseEvent | TouchEvent) => {
 		e.stopImmediatePropagation();
 
 		//if dimensions have not been set, set them
@@ -175,6 +175,7 @@ class colorWheel extends subComponents {
 		e.stopPropagation();
 		this.handles[this.selectedHandle].moving(e);
 	};
+	throttledMove = throttle(this.moving, 16);
 
 	private click = (e: MouseEvent) => {
 		//if add or remove button is clicked
@@ -198,10 +199,9 @@ class colorWheel extends subComponents {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 	};
-	// private touchMoving = (e: TouchEvent) => {
-	// 	this.handles[this.selectedHandle].touchMoving(e);
-	// };
-	throttledMove = throttle(this.moving, 16);
+	private touchMoving = (e: TouchEvent) => {
+		this.handles[this.selectedHandle].touchMoving(e);
+	};
 	//#endregion event listener implementation
 
 	selectionHandler(input: number | 'new' | 'delete'): void {

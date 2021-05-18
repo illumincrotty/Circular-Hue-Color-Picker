@@ -27,10 +27,14 @@
 
 	border: 0.2rem solid hsla(0, 0%, 20%, 1);
 	box-shadow: 0 0 0.5rem hsla(0, 0%, 0%, 0.3);
+	font-family: inherit;
+	font-size: inherit;
 }
 
-.colorPicker-pre:hover {
-	border-color: white;
+@media (hover: hover) and (pointer: fine) {
+	.colorPicker-pre:hover {
+		border-color: white;
+	}
 }
 
 .colorPicker-component {
@@ -63,7 +67,6 @@
 	color: var(--text-color);
 	line-height: 1.5;
 	box-sizing: border-box;
-	--colorPicker-width: 15rem;
 	--selectedColor: hsl(0, 0%, 50%);
 	background-color: var(--Main);
 	width: var(--colorPicker-width);
@@ -84,10 +87,6 @@
 	box-sizing: border-box;
 	width: calc(var(--colorPicker-width) * 0.9);
 	padding: 0;
-}
-
-.colorPicker-component * {
-	font-size: inherit;
 }
 
 .colorPicker-container {
@@ -148,7 +147,7 @@
 
 	--borderColor: var(--Secondary);
 
-	--colorPickerHandleSize: calc(var(--colorPicker-width) * 0.9 * 0.12);
+	--colorPickerHandleSize: calc(var(--colorWheelWidth) * 0.1);
 
 	box-shadow: 0rem 0rem 0.15rem hsla(0, 0%, 0%, 0.3);
 
@@ -191,15 +190,22 @@
 	height: var(--circle-Size);
 }
 
-.colorPicker-circle-dynamic:hover,
-.colorPicker-circle-dynamic:focus {
-	border-color: var(--Accent);
+.colorPicker-circle-dynamic:focus-visible {
+	outline: 0.4em solid var(--Accent);
 }
+
+@media (hover: hover) and (pointer: fine) {
+	.colorPicker-circle-dynamic:hover {
+		border-color: var(--Accent);
+	}
+}
+
 .colorPicker-circle-dynamic:focus:active {
 	border-color: var(--SecondaryAccent);
 }
 
 .colorPicker-svg-button-wrap {
+	background: transparent;
 	border: none;
 	fill: var(--Accent);
 }
@@ -211,12 +217,21 @@
 	bottom: 0;
 	transform: translate(25%, 25%);
 }
+.colorPicker-svg-button-wrap:focus-visible {
+	outline: 0.2rem solid var(--Accent);
+}
 
 .colorPicker-svg-button {
 	fill: inherit;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	width: inherit;
 }
-.colorPicker-svg-button-wrap:hover {
-	fill: var(--SecondaryAccent);
+
+@media (hover: hover) and (pointer: fine) {
+	.colorPicker-svg-button-wrap:hover {
+		fill: var(--SecondaryAccent);
+	}
 }
 
 .colorPicker-svg-button-wrap:active {

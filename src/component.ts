@@ -17,9 +17,13 @@ class colorPickerComponent {
 	name = 'component';
 	id: number;
 	component: HTMLElement;
-	subComponents: subComponents[] = [];
+	subcomponents: subComponents[] = [];
 
-	constructor(parentElement: HTMLElement) {
+	constructor(
+		parentElement: HTMLElement,
+		initiallyVisible: boolean,
+		width: string
+	) {
 		//create and save unique identifier
 		colorPickerComponent.componentCount += 1;
 		this.id = colorPickerComponent.componentCount;
@@ -27,19 +31,23 @@ class colorPickerComponent {
 		this.component = document.createElement('div');
 		this.component.classList.add(
 			'colorPicker-component',
-			'colorPicker-container',
-			'm-fadeOut'
+			'colorPicker-container'
 		);
+		this.component.style.setProperty('--colorPicker-width', width);
+		if (!initiallyVisible) {
+			this.component.classList.add('m-fadeOut');
+		}
+
 		window.addEventListener('resize', this.resize.bind(this));
 
-		//add Subcomponenets
-		this.subComponents.push(new colorWheel(this.component));
-		this.subComponents.push(new colorCircle(this.component));
-		this.subComponents.push(new sliders(this.component, this.id));
-		this.subComponents.push(new textInput(this.component));
+		//add Subcomponents
+		this.subcomponents.push(new colorWheel(this.component));
+		this.subcomponents.push(new colorCircle(this.component));
+		this.subcomponents.push(new sliders(this.component, this.id));
+		this.subcomponents.push(new textInput(this.component));
 
 		//#region testing
-		//add temporary testing componenets
+		//add temporary testing components
 		if (colorPickerComponent.debug) {
 			const addColorButton = document.createElement('button');
 			addColorButton.classList.add('colorPicker-testing-button');
@@ -66,40 +74,33 @@ class colorPickerComponent {
 		}
 		//#endregion testing
 
-		const pre = document.createElement('button');
-		pre.classList.add('colorPicker-pre');
-		pre.append(this.component);
-
-		document.onclick = (e) => {
-			if (e.target instanceof HTMLElement) {
-				if (e.target === pre) {
-					this.component.classList.remove('m-fadeOut');
-				} else {
-					this.component.classList.add('m-fadeOut');
-				}
-			}
-		};
-
 		this.component.onclick = (e) => {
 			e.stopPropagation();
 			e.preventDefault();
 		};
 
-		parentElement.parentElement?.replaceChild(pre, parentElement);
+		parentElement.appendChild(this.component);
 		emitSelectedChange('new');
-		// this.component.style.visibility = 'hidden';
 	}
 
 	//#region non constructor functions
 	logState = (): void => {
 		console.info('Logging State Of Component');
 		console.info(this);
-		this.subComponents.forEach((element) => {
+		this.subcomponents.forEach((element) => {
 			console.group(`Logging ${element.name}`);
 			element.logState();
 			console.groupEnd();
 		});
 		this.component.focus();
+	};
+
+	visibility = (val: boolean) => {
+		if (val) {
+			this.component.classList.remove('m-fadeOut');
+		} else {
+			this.component.classList.add('m-fadeOut');
+		}
 	};
 
 	undebouncedResize = (): void => {
@@ -110,20 +111,3 @@ class colorPickerComponent {
 
 	//#endregion non constructor functions
 }
-
-// class text extends subComponents{
-// 	textWrapper: HTMLDivElement;
-// 	constructor(parentElement: HTMLElement) {
-// 		super()
-// 		this.textWrapper = document.createElement('div');
-// 		//
-
-// 		parentElement.appendChild(this.textWrapper);
-// 	}
-// }
-
-// class textInput{
-// 	constructor(parentElement: HTMLElement){
-// 		super()
-// 	}
-// }

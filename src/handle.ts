@@ -83,20 +83,38 @@ class handle {
 		this.active = false;
 	};
 
-	down = (parentElement: HTMLElement, e: MouseEvent): void => {
+	down = (parentElement: HTMLElement, e: MouseEvent | TouchEvent): void => {
 		this.setDimensions(parentElement, this.dimensions.functionalRad < 1);
 		this.active = true;
 		this.click(e);
 	};
 
-	click = (e: MouseEvent): void => {
-		const x = e.clientX - this.dimensions.bcrX;
-		const y = e.clientY - this.dimensions.bcrY;
-		this.updateFromPosition({
-			x: x - this.dimensions.offset,
-			y: y - this.dimensions.offset,
-		});
+	click = (e: MouseEvent | TouchEvent): void => {
+		this.updateFromPosition(
+			e instanceof MouseEvent
+				? this.calcPosMouse(e)
+				: this.calcPosTouch(e)
+		);
 	};
+
+	calcPosMouse(e: MouseEvent): cartPt {
+		return {
+			x: e.clientX - this.dimensions.bcrX - this.dimensions.offset,
+			y: e.clientY - this.dimensions.bcrY - this.dimensions.offset,
+		};
+	}
+	calcPosTouch(e: TouchEvent): cartPt {
+		return {
+			x:
+				e.targetTouches[0].clientX -
+				this.dimensions.bcrX -
+				this.dimensions.offset,
+			y:
+				e.targetTouches[0].clientY -
+				this.dimensions.bcrY -
+				this.dimensions.offset,
+		};
+	}
 
 	private unthrottledMove = (e: MouseEvent): void => {
 		if (this.active) {
@@ -106,6 +124,8 @@ class handle {
 	moving = throttle(this.unthrottledMove, 30);
 
 	private unthrottledTouchMove = (e: TouchEvent) => {
+		e.preventDefault();
+
 		if (this.active) {
 			const x = e.targetTouches[0].clientX - this.dimensions.bcrX;
 			const y = e.targetTouches[0].clientY - this.dimensions.bcrY;

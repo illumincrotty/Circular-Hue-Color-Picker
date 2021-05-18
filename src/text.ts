@@ -50,7 +50,7 @@ class textInput extends subComponents {
 		this.fullSpan.append(this.numberInputs.saturation);
 		this.fullSpan.append(document.createTextNode('%,'));
 		this.fullSpan.append(this.numberInputs.lightness);
-		this.fullSpan.append(document.createTextNode('%)  '));
+		this.fullSpan.append(document.createTextNode('%) '));
 		this.createCopyButton();
 
 		colorStateManger.subscribe(this.colorChangeHandler.bind(this));
@@ -95,13 +95,11 @@ class textInput extends subComponents {
 	}
 	createCopyButton(): void {
 		this.copy = document.createElement('button');
-		this.copy.classList.add(
-			'colorPicker-circle',
-			'colorPicker-svg-button-wrap'
-		);
+		this.copy.classList.add('colorPicker-svg-button-wrap');
 		this.copy.style.width = '1rem';
-		this.copy.style.transform = 'translate(25%, 25%)';
+		this.copy.style.height = '1rem';
 		this.copy.style.cursor = 'copy';
+		this.copy.style.verticalAlign = 'text-bottom';
 
 		this.copy.onclick = () => {
 			navigator.clipboard

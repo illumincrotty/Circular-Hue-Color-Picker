@@ -23,11 +23,15 @@ class colorCircle extends subComponents {
 		this.wrapper.classList.add('colorPicker-container');
 		this.wrapper.style.flexDirection = 'row';
 		this.wrapper.style.flexWrap = 'wrap';
-		this.wrapper.style.setProperty('--circle-Size', '2.3rem');
+		this.wrapper.style.setProperty(
+			'--circle-Size',
+			'calc(var(--colorPicker-width)*.15)'
+		);
 
 		this.addClickEventDelegation();
 		colorStateManger.subscribe(this.colorChangeHandler);
 		selectedStateManger.subscribe(this.selectedHandler);
+		// resizeAlert.subscribe(()=>{})
 
 		parentElement.appendChild(this.wrapper);
 	}
@@ -53,25 +57,15 @@ class colorCircle extends subComponents {
 		);
 		this.circleList.push(newCircle);
 		this.wrapper.append(newCircle);
-		this.setSize();
 		return;
 	};
 
 	private removeCircle = () => {
 		this.circleList[this.selected].remove();
-		this.setSize();
 		if (this.circleList.length <= 6) {
 			this.circleList[this.circleList.length - 1].style.display = 'block';
 		}
 		return this.circleList.splice(this.selected, 1);
-	};
-
-	private setSize = () => {
-		// this.wrapper.style.setProperty(
-		// 	'--circle-Size',
-		// 	`${Math.max(2, 3 - (this.circleList.length - 1) / 3)}rem`
-		// );
-		return;
 	};
 
 	private deselect = (index: number) => {
