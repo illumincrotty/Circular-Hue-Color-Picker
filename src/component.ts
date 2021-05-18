@@ -1,5 +1,6 @@
 import {
 	emitSelectedChange,
+	numberOfColorsAlert,
 	resizeAlert,
 	subComponents,
 } from './utilities/stateUtilities.js';
@@ -20,9 +21,10 @@ class colorPickerComponent {
 	subcomponents: subComponents[] = [];
 
 	constructor(
-		parentElement: HTMLElement,
-		initiallyVisible: boolean,
-		width: string
+		parentElement: HTMLElement | ShadowRoot,
+		standAlone = true,
+		width = '15rem',
+		maxColors = '5'
 	) {
 		//create and save unique identifier
 		colorPickerComponent.componentCount += 1;
@@ -31,56 +33,63 @@ class colorPickerComponent {
 		this.component = document.createElement('div');
 		this.component.classList.add(
 			'colorPicker-component',
-			'colorPicker-container'
+			'colorPicker-container',
+			'm-fadeOut'
 		);
+
 		this.component.style.setProperty('--colorPicker-width', width);
-		if (!initiallyVisible) {
-			this.component.classList.add('m-fadeOut');
+
+		if (standAlone) {
+			this.component.classList.remove('m-fadeOut');
 		}
 
 		window.addEventListener('resize', this.resize.bind(this));
 
-		//add Subcomponents
-		this.subcomponents.push(new colorWheel(this.component));
-		this.subcomponents.push(new colorCircle(this.component));
-		this.subcomponents.push(new sliders(this.component, this.id));
-		this.subcomponents.push(new textInput(this.component));
+		void new Promise(() => {
+			//add Subcomponents
+			this.subcomponents.push(new colorWheel(this.component));
+			this.subcomponents.push(new colorCircle(this.component));
+			this.subcomponents.push(new sliders(this.component, this.id));
+			this.subcomponents.push(new textInput(this.component));
 
-		//#region testing
-		//add temporary testing components
-		if (colorPickerComponent.debug) {
-			const addColorButton = document.createElement('button');
-			addColorButton.classList.add('colorPicker-testing-button');
-			addColorButton.textContent = 'Add';
-			addColorButton.addEventListener('click', () => {
-				emitSelectedChange('new');
-			});
+			//#region testing
+			//add temporary testing components
+			if (colorPickerComponent.debug) {
+				const addColorButton = document.createElement('button');
+				addColorButton.classList.add('colorPicker-testing-button');
+				addColorButton.textContent = 'Add';
+				addColorButton.addEventListener('click', () => {
+					emitSelectedChange('new');
+				});
 
-			const remColorButton = document.createElement('button');
-			remColorButton.classList.add('colorPicker-testing-button');
-			remColorButton.textContent = 'Remove';
-			remColorButton.addEventListener('click', () =>
-				emitSelectedChange('delete')
-			);
+				const remColorButton = document.createElement('button');
+				remColorButton.classList.add('colorPicker-testing-button');
+				remColorButton.textContent = 'Remove';
+				remColorButton.addEventListener('click', () =>
+					emitSelectedChange('delete')
+				);
 
-			const stateLog = document.createElement('button');
-			stateLog.classList.add('colorPicker-testing-button');
-			stateLog.textContent = 'Log State';
-			stateLog.addEventListener('mousedown', this.logState);
+				const stateLog = document.createElement('button');
+				stateLog.classList.add('colorPicker-testing-button');
+				stateLog.textContent = 'Log State';
+				stateLog.addEventListener('mousedown', this.logState);
 
-			this.component.appendChild(stateLog);
-			this.component.appendChild(addColorButton);
-			this.component.appendChild(remColorButton);
-		}
-		//#endregion testing
+				this.component.appendChild(stateLog);
+				this.component.appendChild(addColorButton);
+				this.component.appendChild(remColorButton);
+			}
+			//#endregion testing
+
+			parentElement.appendChild(this.component);
+			emitSelectedChange('new');
+			numberOfColorsAlert.notify(parseInt(maxColors));
+			return;
+		});
 
 		this.component.onclick = (e) => {
 			e.stopPropagation();
 			e.preventDefault();
 		};
-
-		parentElement.appendChild(this.component);
-		emitSelectedChange('new');
 	}
 
 	//#region non constructor functions
@@ -95,11 +104,11 @@ class colorPickerComponent {
 		this.component.focus();
 	};
 
-	visibility = (val: boolean) => {
+	hide = (val: boolean): void => {
 		if (val) {
-			this.component.classList.remove('m-fadeOut');
-		} else {
 			this.component.classList.add('m-fadeOut');
+		} else {
+			this.component.classList.remove('m-fadeOut');
 		}
 	};
 
