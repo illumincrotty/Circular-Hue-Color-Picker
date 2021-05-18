@@ -31,7 +31,6 @@ class colorCircle extends subComponents {
 		this.addClickEventDelegation();
 		colorStateManger.subscribe(this.colorChangeHandler);
 		selectedStateManger.subscribe(this.selectedHandler);
-		// resizeAlert.subscribe(()=>{})
 
 		parentElement.appendChild(this.wrapper);
 	}
