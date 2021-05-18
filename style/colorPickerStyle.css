@@ -1,4 +1,14 @@
-.colorPicker-pre {
+.colorPicker-opener,
+.colorPicker-component {
+	box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+.colorPicker-opener {
 	width: 6rem;
 	height: 6rem;
 	border-radius: 25%;
@@ -29,6 +39,7 @@
 	box-shadow: 0 0 0.5rem hsla(0, 0%, 0%, 0.3);
 	font-family: inherit;
 	font-size: inherit;
+	transform: translateZ(1px);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -66,8 +77,6 @@
 
 	color: var(--text-color);
 	line-height: 1.5;
-	box-sizing: border-box;
-	--selectedColor: hsl(0, 0%, 50%);
 	background-color: var(--Main);
 	width: var(--colorPicker-width);
 	padding: 1rem;
@@ -147,7 +156,7 @@
 
 	--borderColor: var(--Secondary);
 
-	--colorPickerHandleSize: calc(var(--colorWheelWidth) * 0.1);
+	--colorPickerHandleSize: calc(var(--colorWheelWidth) * 0.15);
 
 	box-shadow: 0rem 0rem 0.15rem hsla(0, 0%, 0%, 0.3);
 
@@ -162,7 +171,7 @@
 	position: absolute;
 
 	border-radius: 50%;
-	border: calc(var(--colorPickerHandleSize) * 0.15) solid var(--borderColor);
+	border: calc(var(--colorPickerHandleSize) * 0.1) solid var(--borderColor);
 	background: var(--selectedColor);
 
 	width: var(--colorPickerHandleSize);
