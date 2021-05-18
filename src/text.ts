@@ -57,37 +57,43 @@ class textInput extends subComponents {
 
 		this.fullSpan.addEventListener('change', (ev) => {
 			const target = ev.target;
-			if (target === this.numberInputs.hue) {
-				emitColorChange({
-					type: 'subtype',
-					value: {
-						type: 'hue',
-						value: parseInt(this.numberInputs.hue.value) % 360 || 0,
-					},
-					source: 'text',
-				});
-			}
-			if (target === this.numberInputs.saturation) {
-				emitColorChange({
-					type: 'subtype',
-					value: {
-						type: 'saturation',
-						value:
-							parseInt(this.numberInputs.saturation.value) || 0,
-					},
-					source: 'text',
-				});
-			}
-			if (target === this.numberInputs.lightness) {
-				emitColorChange({
-					type: 'subtype',
-					value: {
-						type: 'lightness',
-						value:
-							parseInt(this.numberInputs.lightness.value) || 50,
-					},
-					source: 'text',
-				});
+			if (target instanceof HTMLInputElement) {
+				if (target === this.numberInputs.hue) {
+					emitColorChange({
+						type: 'subtype',
+						value: {
+							type: 'hue',
+							value:
+								parseInt(this.numberInputs.hue.value) % 360 ||
+								0,
+						},
+						source: 'text',
+					});
+				}
+				if (target === this.numberInputs.saturation) {
+					emitColorChange({
+						type: 'subtype',
+						value: {
+							type: 'saturation',
+							value:
+								parseInt(this.numberInputs.saturation.value) ||
+								0,
+						},
+						source: 'text',
+					});
+				}
+				if (target === this.numberInputs.lightness) {
+					emitColorChange({
+						type: 'subtype',
+						value: {
+							type: 'lightness',
+							value:
+								parseInt(this.numberInputs.lightness.value) ||
+								50,
+						},
+						source: 'text',
+					});
+				}
 			}
 		});
 
@@ -101,16 +107,18 @@ class textInput extends subComponents {
 		this.copy.style.cursor = 'copy';
 		this.copy.style.verticalAlign = 'text-bottom';
 
-		this.copy.onclick = () => {
+		// only element in here that needs click events,
+		// otherwise I would've used event delegation
+		this.copy.addEventListener('click', () => {
 			navigator.clipboard
 				.writeText(this.colorText)
 				.then(() => {
 					return;
 				})
 				.catch((error: Error) => {
-					alert(`Copy failed! ${error.message}`);
+					console.error(`Copy failed! ${error.message}`);
 				});
-		};
+		});
 
 		this.copy.append(this.colorText);
 
