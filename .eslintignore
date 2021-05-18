@@ -1,9 +1,7 @@
-#.gitignore
-#==========
+.eslintignore
+.gitignore
 
-# Build directory
 dist
-
 
 .vscode/*
 !.vscode/settings.json
@@ -11,7 +9,6 @@ dist
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
-.vscode
 
 # Local History for Visual Studio Code
 .history/
@@ -100,6 +97,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
+dist
 
 # Gatsby files
 .cache/
