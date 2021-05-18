@@ -1,5 +1,6 @@
 @font-face {
 	font-family: Atkinson-Hyperlegible;
+	font-display: swap;
 	src: url('../../fonts/WOFF2/Atkinson-Hyperlegible-Regular.woff2')
 			format('woff2'),
 		url('../../fonts/WOFF2/Atkinson-Hyperlegible-regular.WOFF')
@@ -7,6 +8,7 @@
 }
 @font-face {
 	font-family: Syne;
+	font-display: swap;
 	src: url('../fonts/Syne/Syne-Regular.woff2') format('woff2'),
 		url('../fonts/Syne/Syne-Regular.woff') format('woff');
 }
