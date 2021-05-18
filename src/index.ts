@@ -1,57 +1,96 @@
 import { colorPickerComponent } from './component.js';
 
 class colorPicker extends HTMLElement {
-	pickerElement: colorPickerComponent;
-	private _width = '15rem';
-	private _visibility = false;
+	openButton: HTMLElement;
+	pickerElement!: colorPickerComponent;
+	root;
 	constructor() {
 		super();
-		const root = this.attachShadow({ mode: 'open' });
+		this.style.visibility = 'hidden';
 
-		const pre = document.createElement('button');
-		pre.classList.add('colorPicker-pre');
-		root.appendChild(pre);
+		this.root = this.attachShadow({ mode: 'open' });
 
-		const link = document.createElement('link');
-		link.rel = 'stylesheet';
-		link.type = 'text/css';
-		link.href = '../../style/colorPickerStyle.css';
-		root.appendChild(link);
-
-		this.pickerElement = new colorPickerComponent(pre, false, '15rem');
-
-		document.addEventListener('click', (e) => {
-			if (e.target instanceof HTMLElement) {
-				if (e.target === this) {
-					this.pickerElement.visibility(true);
-				} else {
-					this.pickerElement.visibility(false);
-				}
-			}
+		//Add Styles
+		void new Promise(() => {
+			const link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = '../../style/colorPickerStyle.css';
+			this.root.appendChild(link);
 		});
+
+		this.openButton = document.createElement('button');
+		this.openButton.setAttribute('aria-label', 'open color picker');
+		this.openButton.classList.add('colorPicker-opener');
 	}
+
 	connectedCallback() {
-		if (!this.hasAttribute('width')) {
-			this.setAttribute('width', '15rem');
+		if (this.standalone) {
+			this.pickerElement = new colorPickerComponent(
+				this.root,
+				true,
+				this.width,
+				this.maxcolors
+			);
+		} else {
+			this.root.appendChild(this.openButton);
+			this.pickerElement = new colorPickerComponent(
+				this.openButton,
+				false,
+				this.width,
+				this.maxcolors
+			);
+			document.addEventListener(
+				'click',
+				this.clickEventListener.bind(this)
+			);
 		}
-		if (!this.hasAttribute('visibility')) {
-			this.setAttribute('visibility', 'false');
+
+		void this.makeVisible();
+	}
+
+	disconnectedCallback() {
+		window.removeEventListener('click', this.clickEventListener.bind(this));
+	}
+
+	clickEventListener = (e: MouseEvent | TouchEvent) => {
+		if (e.target instanceof HTMLElement) {
+			console.log(e.target);
+			if (e.target === this && !this.standalone) {
+				this.pickerElement.hide(false);
+			} else {
+				this.pickerElement.hide(true);
+			}
 		}
+	};
+
+	async makeVisible() {
+		await new Promise(() => {
+			return setTimeout(() => {
+				this.style.removeProperty('visibility');
+			}, 4);
+		});
 	}
 
 	static get observedAttributes() {
-		return ['width', 'PickerVisible'];
+		return ['width'];
 	}
 
 	attributeChangedCallback(name: string, oldValue: string, newValue: string) {
 		oldValue;
+		console.log(name);
 		switch (name) {
 			case 'width':
-				this.width = newValue;
+				this.pickerElement?.component?.style.setProperty(
+					`--colorPicker-width`,
+					newValue
+				);
+				this.pickerElement?.resize();
 				break;
 
-			case 'visibility':
-				this.visibility = newValue;
+			case 'standalone':
+				break;
+			case 'maxcolors':
 				break;
 			default:
 				break;
@@ -59,25 +98,29 @@ class colorPicker extends HTMLElement {
 	}
 
 	public get width() {
-		return this._width;
+		return this.getAttribute('width') ?? undefined;
 	}
 	public set width(input) {
-		this._width = input;
-		this.setAttribute('width', input);
-		this.pickerElement.component.style.setProperty(
-			`--colorPicker-width`,
-			input
-		);
-		this.pickerElement.resize();
+		if (input) this.setAttribute('width', input);
 	}
 
-	public get visibility() {
-		return this._visibility.toString();
+	public get standalone() {
+		return this.hasAttribute('standalone');
 	}
-	public set visibility(input) {
-		this._visibility = input === 'true';
-		this.pickerElement.visibility(this._visibility);
-		this.setAttribute('value', input.toString());
+
+	public set standalone(input) {
+		if (input) {
+			this.setAttribute('standalone', '');
+		} else {
+			this.removeAttribute('standalone');
+		}
+	}
+
+	public get maxcolors() {
+		return this.getAttribute('maxcolors') ?? undefined;
+	}
+	public set maxcolors(input) {
+		if (input) this.setAttribute('maxcolors', input);
 	}
 }
 
