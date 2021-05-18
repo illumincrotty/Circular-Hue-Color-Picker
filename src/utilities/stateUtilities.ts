@@ -37,13 +37,17 @@ export const selectedStateManger = new PubSub<
 	selectedColor | 'new' | 'delete'
 >();
 export const resizeAlert = new PubSub<void>();
+export const numberOfColorsAlert = new PubSub<number>();
+numberOfColorsAlert.subscribe((input: number): void => {
+	maxColors = input;
+});
 
 export const emitSelectedChange = (
 	input: NonNullable<number> | 'new' | 'delete'
 ): void => {
 	if (typeof input == 'string') {
 		if (input === 'new') {
-			if (colors.length < 5) {
+			if (colors.length < maxColors) {
 				currentSelectedIndex = colors.push(defaultColor()) - 1;
 				selectedStateManger.notify('new');
 				selectedStateManger.notify(colors.length - 1);
@@ -90,3 +94,4 @@ export const emitColorChange = (input: colorChangeExtended): void => {
 
 const colors: hsl_color[] = [];
 let currentSelectedIndex = -1;
+let maxColors = 5;
