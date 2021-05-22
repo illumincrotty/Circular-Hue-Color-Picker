@@ -1,10 +1,10 @@
-import {
+import type {
 	changeSource,
 	colorChangeExtended,
-	defaultColor,
 	hsl_color,
 	colorChange,
 } from './colorUtilities.js';
+import { defaultColor } from './colorUtilities.js';
 
 export abstract class subComponents {
 	abstract colorChangeHandler(input: colorChange): void;

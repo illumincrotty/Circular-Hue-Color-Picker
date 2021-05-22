@@ -1,14 +1,13 @@
-import {
+import type {
 	hsl_color_generic,
 	hsl_color,
-	hslColorToCssString,
 	colorChangeExtended,
 } from './utilities/colorUtilities.js';
+import { hslColorToCssString } from './utilities/colorUtilities.js';
+import type { cartPt, polarPt } from './utilities/positionUtilities.js';
 import {
-	cartPt,
 	cartToPolar,
 	polarToCart,
-	polarPt,
 	degreesToRadians,
 	radiansToDegrees,
 } from './utilities/positionUtilities.js';
@@ -190,7 +189,7 @@ class handle {
 			saturation:
 				100 *
 					(Math.min(pt.radius, this.dimensions.functionalRad) /
-						this.dimensions.functionalRad) || 0,
+						this.dimensions.functionalRad) ?? 0,
 			lightness: this.color.lightness,
 		};
 	};

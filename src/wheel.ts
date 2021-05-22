@@ -1,5 +1,5 @@
 import { handle } from './handle.js';
-import { changeSource, colorChange } from './utilities/colorUtilities.js';
+import type { changeSource, colorChange } from './utilities/colorUtilities.js';
 import {
 	colorStateManger,
 	emitSelectedChange,

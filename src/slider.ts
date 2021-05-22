@@ -1,15 +1,15 @@
-import {
+import type {
 	changeSource,
 	hsl_color_generic,
 	colorSubtype,
 	colorChange,
 	colorChangeExtended,
-} from './utilities/colorUtilities.js';
+} from './utilities/colorUtilities';
 import {
 	subComponents,
 	colorStateManger,
 	emitColorChange,
-} from './utilities/stateUtilities.js';
+} from './utilities/stateUtilities';
 
 export { sliders };
 class sliders extends subComponents {

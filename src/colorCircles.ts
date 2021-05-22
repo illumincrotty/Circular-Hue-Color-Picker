@@ -1,8 +1,5 @@
-import {
-	colorChange,
-	changeSource,
-	hslColorToCssString,
-} from './utilities/colorUtilities.js';
+import type { colorChange, changeSource } from './utilities/colorUtilities.js';
+import { hslColorToCssString } from './utilities/colorUtilities.js';
 import {
 	colorStateManger,
 	emitSelectedChange,

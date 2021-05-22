@@ -1,9 +1,11 @@
-import {
+import type {
 	changeSource,
 	colorChange,
+	hsl_color_generic,
+} from './utilities/colorUtilities.js';
+import {
 	defaultColor,
 	hslColorToCssString,
-	hsl_color_generic,
 } from './utilities/colorUtilities.js';
 import {
 	colorStateManger,
