@@ -8,6 +8,7 @@ export const debounce = <fn extends (...args: never[]) => never | void>(
 		if (timeout) {
 			window.clearTimeout(timeout);
 		}
+
 		timeout = window.setTimeout(() => {
 			callback(...args);
 		}, wait);
@@ -46,6 +47,7 @@ export const throttle = <fn extends (...args: never[]) => never | void>(
 			delayedCall();
 			return;
 		}
+
 		if (!calledBeforeThrottleTimerOver) {
 			calledBeforeThrottleTimerOver = true;
 		}

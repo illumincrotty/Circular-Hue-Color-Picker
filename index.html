@@ -7,25 +7,18 @@
 			content="A dependency free typescript hue color picker"
 		/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>TypeScript Attempt 2 (hopefully less naive)</title>
-		<link
-			rel="shortcut icon"
-			href="./images/palette.ico"
-			type="image/x-icon"
-		/>
+		<title>DEV Color Picker</title>
+		<link rel="shortcut icon" href="/images/palette.ico" type="image/x-icon" />
 		<link
 			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.0.0/modern-normalize.min.css"
-			integrity="sha512-ISS7cAi1PEhQ8jnbJpJZMd29NlhNj4AWYyLOSp2CE/CsHxTCu+r+t0D2yoJudVrd0/8fTVPUVDzY5Tvli75u/g=="
-			crossorigin="anonymous"
-			referrerpolicy="no-referrer"
+			type="text/css"
+			defer
+			href="/style/exampleStyle.css"
 		/>
-		<link rel="stylesheet" defer href="./style/defaultStyling.css" />
-
-		<script type="module" defer src="./dist/index.js"></script>
 	</head>
 
 	<body>
+		<script type="module" defer src="./lib/index.ts"></script>
 		<color-picker standalone></color-picker>
 	</body>
 </html>

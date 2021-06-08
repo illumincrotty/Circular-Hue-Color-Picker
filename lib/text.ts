@@ -1,18 +1,14 @@
+import { copyButton, numInput, svgButton, svgButtonWrapper, textWrap } from './style/cpStyle.css';
 import type {
 	changeSource,
 	colorChange,
+	colorChangeExtended,
+	colorSubtype,
 	hsl_color_generic,
-} from './utilities/colorUtilities.js';
-import {
-	defaultColor,
-	hslColorToCssString,
-} from './utilities/colorUtilities.js';
-import {
-	colorStateManger,
-	emitColorChange,
-	subComponents,
-} from './utilities/stateUtilities.js';
-export { textInput };
+} from './utilities/colorUtilities';
+import { defaultColor, hslColorToCssString } from './utilities/colorUtilities';
+import type { State, subComponents } from './utilities/stateUtilities';
+export { TextInput };
 
 interface inputOptions {
 	min?: number;
@@ -20,18 +16,18 @@ interface inputOptions {
 	step?: number;
 	placeholder?: number;
 }
-class textInput extends subComponents {
+class TextInput implements subComponents {
 	name: changeSource = 'text';
 	numberInputs: hsl_color_generic<HTMLInputElement>;
 	fullSpan: HTMLDivElement;
 	copy!: HTMLButtonElement;
 	colorText = '';
 
-	constructor(parentElement: HTMLElement) {
-		super();
+	constructor(parentElement: HTMLElement, state: State) {
+		state.subscribe(this);
 
 		this.fullSpan = document.createElement('div');
-		this.fullSpan.classList.add('colorPicker-text-wrapper');
+		this.fullSpan.classList.add(`${textWrap}`);
 
 		this.numberInputs = {
 			hue: this.createNumberInput({
@@ -55,90 +51,63 @@ class textInput extends subComponents {
 		this.fullSpan.append(document.createTextNode('%) '));
 		this.createCopyButton();
 
-		colorStateManger.subscribe(this.colorChangeHandler.bind(this));
+		const commonUpdate = (
+			sub: colorSubtype,
+			max: number
+		): colorChangeExtended => {
+			return {
+				type: 'subtype',
+				value: {
+					type: sub,
+					value: parseInt(this.numberInputs[sub].value, 10) % max || 0,
+				},
+				source: 'text',
+			};
+		};
 
 		this.fullSpan.addEventListener('change', (ev) => {
-			const target = ev.target;
+			const { target } = ev;
 			if (target instanceof HTMLInputElement) {
 				if (target === this.numberInputs.hue) {
-					emitColorChange({
-						type: 'subtype',
-						value: {
-							type: 'hue',
-							value:
-								parseInt(this.numberInputs.hue.value) % 360 ||
-								0,
-						},
-						source: 'text',
-					});
+					state.color = commonUpdate('hue', 360);
 				}
+
 				if (target === this.numberInputs.saturation) {
-					emitColorChange({
-						type: 'subtype',
-						value: {
-							type: 'saturation',
-							value:
-								parseInt(this.numberInputs.saturation.value) ||
-								0,
-						},
-						source: 'text',
-					});
+					state.color = commonUpdate('saturation', 100);
 				}
+
 				if (target === this.numberInputs.lightness) {
-					emitColorChange({
-						type: 'subtype',
-						value: {
-							type: 'lightness',
-							value:
-								parseInt(this.numberInputs.lightness.value) ||
-								50,
-						},
-						source: 'text',
-					});
+					state.color = commonUpdate('lightness', 100);
 				}
 			}
 		});
 
 		parentElement.appendChild(this.fullSpan);
 	}
+
 	createCopyButton(): void {
 		this.copy = document.createElement('button');
-		this.copy.classList.add('colorPicker-svg-button-wrap');
-		this.copy.style.width = '1rem';
-		this.copy.style.height = '1rem';
-		this.copy.style.cursor = 'copy';
-		this.copy.style.verticalAlign = 'text-bottom';
+		this.copy.classList.add(`${svgButtonWrapper}`, `${copyButton}`);
 
-		// only element in here that needs click events,
-		// otherwise I would've used event delegation
 		this.copy.addEventListener('click', () => {
 			navigator.clipboard
 				.writeText(this.colorText)
 				.then(() => {
 					return;
 				})
-				.catch((error: Error) => {
+				.catch((error: Readonly<Error>) => {
 					console.error(`Copy failed! ${error.message}`);
 				});
 		});
 
 		this.copy.append(this.colorText);
 
-		const svgCopy = document.createElementNS(
-			'http://www.w3.org/2000/svg',
-			'svg'
-		);
-		svgCopy.setAttribute('role', 'img');
-		svgCopy.setAttribute('viewBox', '2.5 0 20 24');
-		svgCopy.style.fillRule = 'evenodd';
-		svgCopy.style.clipRule = 'evenodd';
-		svgCopy.classList.add('colorPicker-svg-button');
-		svgCopy.innerHTML = `<path d="M6.8 19v3.1c0 1 .9 1.9 1.9 1.9h11.7c1 0 1.9-.8 1.9-1.9V7c0-1-.8-1.9-1.9-1.9h-2.3V1.9c0-1-.9-1.9-1.9-1.9H4.5c-1 0-1.9.8-1.9 1.9V17c0 1 .8 1.9 1.9 1.9h2.3zM20.1 7.8H9v13.4h11V7.8zM15.8 5V2.8h-11v13.4h2V7c0-1 .9-1.9 1.9-1.9h7.1z"/>`;
-
-		this.copy.append(svgCopy);
+		this.copy.innerHTML =
+			`<svg role="img" viewBox="2.5 0 20 24" style="fill-rule: evenodd; clip-rule: evenodd;" class="${svgButton}"><path d="M6.8 19v3.1c0 1 .9 1.9 1.9 1.9h11.7c1 0 1.9-.8 1.9-1.9V7c0-1-.8-1.9-1.9-1.9h-2.3V1.9c0-1-.9-1.9-1.9-1.9H4.5c-1 0-1.9.8-1.9 1.9V17c0 1 .8 1.9 1.9 1.9h2.3zM20.1 7.8H9v13.4h11V7.8zM15.8 5V2.8h-11v13.4h2V7c0-1 .9-1.9 1.9-1.9h7.1z"></path></svg>`;
 
 		this.fullSpan.append(this.copy);
 	}
+
 	createNumberInput = (options?: inputOptions): HTMLInputElement => {
 		const input = document.createElement('input');
 		input.setAttribute('type', 'text');
@@ -148,7 +117,8 @@ class textInput extends subComponents {
 		input.setAttribute('max', `${options?.max ?? 100}`);
 		input.setAttribute('step', `${options?.step ?? 1}`);
 		input.setAttribute('placeholder', `${options?.placeholder ?? 50}`);
-		input.classList.add('colorPicker-number-input');
+		input.classList.add(`${numInput}`);
+
 		return input;
 	};
 

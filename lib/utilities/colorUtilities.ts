@@ -7,6 +7,7 @@ export interface colorSubtypeValue {
 
 export type changeSource =
 	| 'wheel'
+	| 'handle'
 	| 'text'
 	| 'slider'
 	| 'component'
@@ -14,11 +15,7 @@ export type changeSource =
 	| 'color-circle';
 
 export type colorChangeExtended =
-	| {
-			type: 'subtype';
-			value: colorSubtypeValue;
-			source?: changeSource;
-	  }
+	| { type: 'subtype'; value: colorSubtypeValue; source?: changeSource }
 	| { type: 'full'; value: hsl_color; source?: changeSource };
 
 export type colorChange = {
@@ -36,22 +33,10 @@ export interface hsl_color extends hsl_color_generic<number> {
 	lightness: NonNullable<number>;
 }
 
-export interface colorChangeFunction {
-	(input: colorChangeExtended): void;
-}
+export type colorChangeFunction = (input: colorChangeExtended) => void;
 
 export function defaultColor(): hsl_color {
 	return { hue: 0, saturation: 0, lightness: 50 };
-}
-
-export function colorCopy<type>(
-	color: hsl_color_generic<type>
-): hsl_color_generic<type> {
-	return {
-		hue: color.hue,
-		saturation: color.saturation,
-		lightness: color.lightness,
-	};
 }
 
 export const hslColorToCssString = (color: hsl_color): string => {

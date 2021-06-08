@@ -2,26 +2,40 @@
 	"root": true,
 	"env": {
 		"browser": true,
-		"es6": true,
-		"jest": true
+		"es2021": true
 	},
-	"extends": [
-		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended",
-		"plugin:@typescript-eslint/recommended",
-		"plugin:@typescript-eslint/recommended-requiring-type-checking",
-		"plugin:jest/recommended",
-		"plugin:jest/style"
-	],
+	"extends": ["xo", "xo-typescript"],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
-		"project": "./tsconfig.json",
-		"ecmaVersion": 2016,
-		"sourceType": "module",
-		"tsconfigRootDir": "."
+		"ecmaVersion": 12,
+		"project": ["**/tsconfig.json"]
 	},
-	"plugins": ["@typescript-eslint", "jest"],
+	"plugins": ["@typescript-eslint"],
 	"rules": {
-		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"]
+		"arrow-parens": ["warn", "always"],
+		"no-mixed-spaces-and-tabs": ["warn", "smart-tabs"],
+		"no-multiple-empty-lines": ["error", { "max": 2, "maxBOF": 3 }],
+		"no-useless-return": "off",
+		"@typescript-eslint/prefer-readonly-parameter-types": "off",
+		"@typescript-eslint/no-unused-vars-experimental": "error",
+		"@typescript-eslint/consistent-type-imports": "error",
+		"@typescript-eslint/no-confusing-void-expression": [
+			"warn",
+			{ "ignoreArrowShorthand": true }
+		],
+		"@typescript-eslint/object-curly-spacing": ["error", "always"],
+		"@typescript-eslint/comma-dangle": ["off"],
+		"@typescript-eslint/member-ordering": ["off"],
+		"indent": "off",
+		"@typescript-eslint/indent": [
+			"error",
+			"tab",
+			{
+				"SwitchCase": 1
+			}
+		],
+		"no-unused-vars": 0,
+		"quote-props": ["warn", "as-needed"],
+		"@typescript-eslint/no-unused-vars": [2, { "argsIgnorePattern": "^_" }]
 	}
 }

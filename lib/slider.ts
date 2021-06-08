@@ -1,60 +1,90 @@
+import { container, range } from './style/cpStyle.css';
+import {
+	hueSlider,
+	lightnessSlider,
+	saturationSlider,
+	sliderStyleBase,
+	sliderWrapper,
+} from './style/range.css';
 import type {
 	changeSource,
 	hsl_color_generic,
 	colorSubtype,
 	colorChange,
-	colorChangeExtended,
 } from './utilities/colorUtilities';
-import {
-	subComponents,
-	colorStateManger,
-	emitColorChange,
-} from './utilities/stateUtilities';
+import type { subComponents, State } from './utilities/stateUtilities';
 
-export { sliders };
-class sliders extends subComponents {
+export { Slider };
+class Slider implements subComponents {
 	name: changeSource = 'slider';
 	sliderWrapper: HTMLDivElement;
-	ranges!: hsl_color_generic<range>;
-	constructor(parentElement: HTMLElement, id: number) {
-		super();
+	ranges!: hsl_color_generic<Range>;
+	constructor(parentElement: HTMLElement, id: number, state: State) {
 		this.sliderWrapper = document.createElement('div');
-		this.sliderWrapper.classList.add('colorPicker-container');
+		this.sliderWrapper.classList.add(`${container}`, `${sliderWrapper}`);
 		parentElement.appendChild(this.sliderWrapper);
-
-		colorStateManger.subscribe(this.colorChangeHandler.bind(this));
-
-		this.createRanges(id);
+		state.subscribe(this);
+		this.createRanges(id, state);
 	}
 
-	createRanges = (id: number): void => {
+	createRanges = (id: number, state: State): void => {
 		this.ranges = {
-			hue: new range(this.sliderWrapper, id, {
+			hue: new Range(this.sliderWrapper, id, state, {
 				name: 'hue',
 				min: 0,
 				max: 360,
 				default: 0,
 			}),
-			saturation: new range(this.sliderWrapper, id, {
+			saturation: new Range(this.sliderWrapper, id, state, {
 				name: 'saturation',
 				min: 0,
 				max: 100,
 				default: 0,
 			}),
-			lightness: new range(this.sliderWrapper, id, {
+			lightness: new Range(this.sliderWrapper, id, state, {
 				name: 'lightness',
 				min: 0,
 				max: 100,
 				default: 50,
 			}),
 		};
+
+		this.ranges.hue.input.classList.add(`${hueSlider}`);
+		this.ranges.saturation.input.classList.add(`${saturationSlider}`);
+		this.ranges.lightness.input.classList.add(`${lightnessSlider}`);
 	};
 
 	colorChangeHandler(change: colorChange): void {
 		if (change.source !== 'slider') {
 			this.ranges.hue.update(change.color.hue);
+			this.ranges.saturation.input.style.setProperty(
+				'--hue',
+				`${change.color.hue}`
+			);
+			this.ranges.lightness.input.style.setProperty(
+				'--hue',
+				`${change.color.hue}`
+			);
+
 			this.ranges.saturation.update(change.color.saturation);
+			this.ranges.hue.input.style.setProperty(
+				'--saturation',
+				`${change.color.saturation}%`
+			);
+			this.ranges.lightness.input.style.setProperty(
+				'--saturation',
+				`${change.color.saturation}%`
+			);
+
 			this.ranges.lightness.update(change.color.lightness);
+			this.ranges.hue.input.style.setProperty(
+				'--lightness',
+				`${change.color.lightness}%`
+			);
+			this.ranges.saturation.input.style.setProperty(
+				'--lightness',
+				`${change.color.lightness}%`
+			);
 			return;
 		}
 	}
@@ -74,25 +104,29 @@ type rangeOpts = {
 	default: number;
 	stepSize?: number;
 };
-class range {
+class Range {
 	input: HTMLInputElement;
 	default: number;
-	constructor(parentElement: HTMLElement, id: number, options: rangeOpts) {
+	constructor(
+		parentElement: HTMLElement,
+		id: number,
+		state: State,
+		options: rangeOpts
+	) {
 		this.default = options.default;
 
 		const wrapper = document.createElement('div');
-		wrapper.classList.add('colorPicker-range');
+		wrapper.classList.add(`${range}`);
 		const label = document.createElement('label');
-		const capitalLabel =
-			options.name[0].toUpperCase() + options.name.slice(1);
+		const capitalLabel = options.name[0].toUpperCase() + options.name.slice(1);
 		label.textContent = capitalLabel;
-		label.style.marginRight = '100%';
 		label.setAttribute('for', `colorPicker-${capitalLabel}-slider-${id}`);
 
 		wrapper.appendChild(label);
 
 		this.input = document.createElement('input');
 		this.input.setAttribute('type', 'range');
+		this.input.classList.add(`${sliderStyleBase}`);
 		this.input.setAttribute('min', `${options.min}`);
 		this.input.setAttribute('max', `${options.max}`);
 		this.input.setAttribute('value', `${options.default}`);
@@ -101,14 +135,14 @@ class range {
 		this.input.classList.add('colorPicker-slider');
 
 		this.input.addEventListener('input', () => {
-			emitColorChange({
+			state.color = {
 				type: 'subtype',
 				value: {
 					type: options.name,
 					value: parseFloat(this.input.value),
 				},
 				source: 'slider',
-			} as colorChangeExtended);
+			};
 		});
 		wrapper.appendChild(this.input);
 

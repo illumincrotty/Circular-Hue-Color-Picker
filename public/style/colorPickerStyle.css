@@ -1,6 +1,7 @@
 .colorPicker-opener,
 .colorPicker-component {
 	box-sizing: border-box;
+	font-family: inherit;
 }
 *,
 *:before,
@@ -9,8 +10,6 @@
 }
 
 .colorPicker-opener {
-	width: 6rem;
-	height: 6rem;
 	border-radius: 25%;
 	position: relative;
 
@@ -36,8 +35,7 @@
 		);
 
 	border: 0.2rem solid hsla(0, 0%, 20%, 1);
-	box-shadow: 0 0 0.5rem hsla(0, 0%, 0%, 0.3);
-	font-family: inherit;
+	box-shadow: 0 0 0rem hsla(0, 0%, 0%, 0.3);
 	font-size: inherit;
 	transform: translateZ(1px);
 }
@@ -49,31 +47,28 @@
 }
 
 .colorPicker-component {
-	font-family: inherit;
 	position: absolute;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	--alabaster: hsl(53, 20%, 80%);
-	--y-in-mn-blue: hsl(218, 19%, 22%);
-	--charcoal: hsl(220, 21%, 11%);
-	--mauvelous: hsl(351, 56%, 73%);
-	--cadet-blue: hsl(187, 48%, 47%);
 
 	--darkGray: hsl(270, 1%, 13%);
 	--lightGray: hsl(270, 7%, 24%);
 	--brightPink: hsl(337, 71%, 60%);
 	--brightYellow: hsl(46, 75%, 55%);
+	--alabaster: hsl(53, 20%, 80%);
 
-	--slate: hsl(210, 30%, 30%);
-	--darkSlate: hsl(210, 30%, 10%);
-	--brightPurple: hsl(271, 100%, 62%);
-	--brightBlue: hsl(210, 100%, 62%);
+	--myrtle-green: hsl(176, 44%, 50%);
+	--honeydew: hsl(256, 14%, 85%);
+	--powder-blue: hsl(253, 5%, 66%);
+	--darkestBlue: hsl(242, 94%, 7%);
 
+	/* dark theme */
 	--Main: var(--darkGray);
 	--Secondary: var(--lightGray);
 	--Accent: var(--brightPink);
 	--SecondaryAccent: var(--brightYellow);
 	--text-color: var(--alabaster);
+	--lightness: 0;
 
 	color: var(--text-color);
 	line-height: 1.5;
@@ -82,8 +77,20 @@
 	padding: 1rem;
 	border-radius: calc(var(--colorPicker-width) * 0.1);
 
-	box-shadow: 0rem 1rem 1.5rem -0.5rem var(--Main),
-		inset 0.5rem 0.5rem 1rem 1.5rem hsla(0, 0%, 100%, 0.02);
+	box-shadow: 0rem 0rem 1.5rem -0.5rem var(--darkGray),
+		inset 0 0 calc(var(--colorPicker-width) / 10)
+			calc(var(--colorPicker-width) / 100)
+			hsla(0, 0%, calc(var(--lightness) * 1%), 0.1);
+}
+@media (prefers-color-scheme: light) {
+	.colorPicker-component {
+		--Main: var(--honeydew);
+		--Secondary: var(--powder-blue);
+		--Accent: var(--myrtle-green);
+		--SecondaryAccent: var(--brightPink);
+		--text-color: var(--darkestBlue);
+		--lightness: 100;
+	}
 }
 
 .m-fadeOut {

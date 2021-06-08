@@ -1,33 +1,67 @@
 {
-	"name": "typescript-hue-color-picker",
+	"name": "dead-simple-color-picker",
 	"version": "0.0.1",
-	"description": "",
-	"main": "./dist/index.js",
-	"scripts": {
-		"build": "tsc --build tsconfig.json",
-		"test": "jest"
+	"description": "A dependency free circular hue color picker",
+	"main": "dist/color-picker.es.js",
+	"files": [
+		"dist",
+		"!dist/style.css",
+		"README.md",
+		"logo.png"
+	],
+	"exports": {
+		"import": "./dist/dead-simple-color-picker.es.js",
+		"require": "./dist/dead-simple-color-picker.umd.js"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Brian-Crotty/Circular-Hue-Color-Picker.git"
-	},
-	"author": "bcrotty1",
-	"license": "LGPL-3.0-or-later",
+	"readme": "README.md",
+	"typings": "./dist/types.d.ts",
+	"keywords": [
+		"typescript",
+		"circular",
+		"color",
+		"picker",
+		"radial",
+		"hue",
+		"types",
+		"simple",
+		"small",
+		"light weight",
+		"dependency free"
+	],
+	"author": "Brian Crotty",
+	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/Brian-Crotty/Circular-Hue-Color-Picker/issues"
 	},
 	"homepage": "https://github.com/Brian-Crotty/Circular-Hue-Color-Picker#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Brian-Crotty/Circular-Hue-Color-Picker.git"
+	},
+	"browserslist": "last 2 versions",
+	"scripts": {
+		"dev": "vite serve",
+		"fastBuild": "vite build --mode production",
+		"build": "vite build --mode production && tsc --noEmit false --emitDeclarationOnly --isolatedModules false --outFile dist/types.d.ts",
+		"serve": "vite preview"
+	},
 	"devDependencies": {
-		"@prettier/plugin-xml": "^0.13.1",
-		"@types/jest": "^26.0.23",
-		"@typescript-eslint/eslint-plugin": "^4.23.0",
-		"@typescript-eslint/parser": "^4.23.0",
-		"eslint": "^7.26.0",
-		"eslint-plugin-jest": "^24.3.6",
-		"jest": "^26.6.3",
+		"@skypack/package-check": "^0.2.2",
+		"@typescript-eslint/eslint-plugin": "^4.25.0",
+		"@typescript-eslint/parser": "^4.25.0",
+		"@vanilla-extract/css": "^0.5.2",
+		"@vanilla-extract/vite-plugin": "^0.1.1",
+		"autoprefixer": "^10.2.6",
+		"eslint": "^7.27.0",
+		"eslint-config-xo": "^0.36.0",
+		"eslint-config-xo-typescript": "^0.41.1",
+		"eslint-plugin-prettier": "^3.4.0",
+		"eslint-plugin-unicorn": "^32.0.1",
+		"postcss-input-style": "^1.0.0",
+		"postcss-normalize": "^10.0.0",
 		"prettier": "^2.3.0",
-		"snowpack": "^3.4.0",
-		"ts-jest": "^26.5.6",
-		"typescript": "^4.2.4"
+		"rollup-plugin-merge-and-inject-css": "^1.1.3",
+		"typescript": "^4.2.3",
+		"vite": "^2.3.4"
 	}
 }
