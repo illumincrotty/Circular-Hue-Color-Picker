@@ -1,4 +1,5 @@
-import { colorCircleBase, colorCircleDynamicStyle, container, theme } from './style/cpStyle.css';
+import { colorCircleBase, colorCircleDynamicStyle } from './style/cpStyle.css';
+import { container, theme } from './style/base.css';
 import type { changeSource, colorChange } from './utilities/colorUtilities';
 import { hslColorToCssString } from './utilities/colorUtilities';
 import type { State, subComponents } from './utilities/stateUtilities';

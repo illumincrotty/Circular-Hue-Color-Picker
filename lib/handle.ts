@@ -1,4 +1,5 @@
-import { handleStyle, theme } from './style/cpStyle.css';
+import { theme } from './style/base.css';
+import { handleStyle } from './style/cpStyle.css';
 import type {
 	hsl_color_generic,
 	hsl_color,

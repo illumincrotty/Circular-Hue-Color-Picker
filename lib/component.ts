@@ -6,8 +6,9 @@ import { TextInput } from './text';
 import { ColorCircle } from './colorCircles';
 import type { changeSource } from './utilities/colorUtilities';
 
-import { appear, componentStyle, container, theme } from './style/cpStyle.css';
+import { appear, componentStyle } from './style/cpStyle.css';
 import { testingButton } from './style/test.css';
+import { container, theme } from './style/base.css';
 export { ColorPickerComponent };
 
 type pickerOptions = {

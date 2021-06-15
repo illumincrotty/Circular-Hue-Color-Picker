@@ -4,8 +4,8 @@
 	"description": "A dependency free circular hue color picker",
 	"main": "dist/color-picker.es.js",
 	"files": [
-		"dist",
-		"!dist/style.css",
+		"dist/dead-simple-color-picker.es.js",
+		"dist/dead-simple-color-picker.umd.js",
 		"README.md",
 		"logo.png"
 	],
@@ -41,12 +41,17 @@
 	"browserslist": "last 2 versions",
 	"scripts": {
 		"dev": "vite serve",
-		"fastBuild": "vite build --mode production",
+		"copy:style": "@powershell Copy-Item ./dist/style.css ./lib/style/style.css",
+		"build:example": "vite build --mode example",
+		"build:fast": "vite build --mode fast",
 		"build": "vite build --mode production && tsc --noEmit false --emitDeclarationOnly --isolatedModules false --outFile dist/types.d.ts",
+		"build:types": "tsc --noEmit false --emitDeclarationOnly --isolatedModules false --outFile dist/types.d.ts",
 		"serve": "vite preview"
 	},
 	"devDependencies": {
+		"@rollup/plugin-strip": "^2.0.1",
 		"@skypack/package-check": "^0.2.2",
+		"@types/node": "^15.12.2",
 		"@typescript-eslint/eslint-plugin": "^4.25.0",
 		"@typescript-eslint/parser": "^4.25.0",
 		"@vanilla-extract/css": "^0.5.2",

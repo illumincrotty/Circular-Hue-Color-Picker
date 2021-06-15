@@ -1,4 +1,5 @@
-import { container, range } from './style/cpStyle.css';
+import { range } from './style/cpStyle.css';
+import { container } from './style/base.css';
 import {
 	hueSlider,
 	lightnessSlider,

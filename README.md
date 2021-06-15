@@ -7,3 +7,5 @@
 <!-- badges -->
 
 A hue color picker written in TypeScript with no dependencies.
+
+Check out the [demo](https://circular-hue-color-picker.onrender.com/)

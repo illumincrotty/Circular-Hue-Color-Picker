@@ -1,6 +1,6 @@
 import { createVar, style } from '@vanilla-extract/css';
 import type { CSSPropertiesWithVars } from '@vanilla-extract/css/dist/declarations/src/types';
-import { theme } from './cpStyle.css';
+import { theme } from './base.css';
 
 
 const size = createVar();

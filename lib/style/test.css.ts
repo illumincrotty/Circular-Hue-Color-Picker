@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { theme } from './cpStyle.css';
+import { theme } from './base.css';
 
 const hoverAndFocus = {
 	color: [theme.accent],

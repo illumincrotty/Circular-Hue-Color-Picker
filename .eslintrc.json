@@ -36,6 +36,8 @@
 		],
 		"no-unused-vars": 0,
 		"quote-props": ["warn", "as-needed"],
-		"@typescript-eslint/no-unused-vars": [2, { "argsIgnorePattern": "^_" }]
+		"@typescript-eslint/no-unused-vars": [2, { "argsIgnorePattern": "^_" }],
+		"quotes":"off",
+		"@typescript-eslint/quotes":["error", "single", { "allowTemplateLiterals": true }]
 	}
 }

@@ -1,4 +1,9 @@
-import { copyButton, numInput, svgButton, svgButtonWrapper, textWrap } from './style/cpStyle.css';
+import { copyButton,
+	numInput,
+	svgButton,
+	svgButtonWrapper,
+	textWrap
+} from './style/cpStyle.css';
 import type {
 	changeSource,
 	colorChange,

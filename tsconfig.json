@@ -27,11 +27,11 @@
 		"moduleResolution": "Node",
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
-		"types": ["vite/client"],
+		"types": ["vite/client", "node"],
 
 		"skipLibCheck": true /* Skip type checking of declaration files. */,
 		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
 	},
-	"include": ["lib"],
-	"exclude": ["lib/style"]
+	"include": ["lib", "cssBuild/buildCSS.ts", "cssBuild/utilities"]
+	// "exclude": ["**/*.css.ts"]
 }

@@ -1,5 +1,5 @@
 import { Handle } from './handle';
-import { colorCircleBase, colorWheelstyle, svgButtonWrapper, wheelButton, wheelLightness } from './style/cpStyle.css';
+import { colorCircleBase, colorWheelstyle, svgButton, svgButtonWrapper, wheelButton, wheelLightness } from './style/cpStyle.css';
 import type { changeSource, colorChange } from './utilities/colorUtilities';
 import type { State, subComponents } from './utilities/stateUtilities';
 import { throttle } from './utilities/timingUtilities';
@@ -54,7 +54,7 @@ class ColorWheel implements subComponents {
 	addAndRemoveColorButton = (): void => {
 		this.addColor = document.createElement('button');
 		this.addColor.innerHTML =
-			'<svg role="img" viewBox="0 0 24 24" style="fill-rule: evenodd; clip-rule: evenodd;" class="colorPicker-svg-button"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12S0 18.623 0 12 5.377 0 12 0zm0 2.767c5.096 0 9.233 4.137 9.233 9.233 0 5.096-4.137 9.233-9.233 9.233-5.096 0-9.233-4.137-9.233-9.233 0-5.096 4.137-9.233 9.233-9.233z"></path><path d="M10.5 10.5V6.9a1.5 1.5 0 013 0v.01-.01 3.6h3.6a1.5 1.5 0 010 3h-.01.01-3.6v3.6a1.5 1.5 0 01-3 0v-.01.01-3.6H6.9a1.5 1.5 0 010-3h.01-.01 3.6z"></path></svg>';
+			`<svg role="img" viewBox="0 0 24 24" style="fill-rule: evenodd; clip-rule: evenodd;" class="${svgButton}"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12S0 18.623 0 12 5.377 0 12 0zm0 2.767c5.096 0 9.233 4.137 9.233 9.233 0 5.096-4.137 9.233-9.233 9.233-5.096 0-9.233-4.137-9.233-9.233 0-5.096 4.137-9.233 9.233-9.233z"></path><path d="M10.5 10.5V6.9a1.5 1.5 0 013 0v.01-.01 3.6h3.6a1.5 1.5 0 010 3h-.01.01-3.6v3.6a1.5 1.5 0 01-3 0v-.01.01-3.6H6.9a1.5 1.5 0 010-3h.01-.01 3.6z"></path></svg>`;
 		this.addColor.classList.add(
 			`${colorCircleBase}`,
 			`${svgButtonWrapper}`,
@@ -69,7 +69,7 @@ class ColorWheel implements subComponents {
 			`${wheelButton}`
 		);
 		this.remColor.innerHTML =
-			'<svg role="img" viewBox="0 0 24 24" style="fill-rule: evenodd; clip-rule: evenodd;" class="colorPicker-svg-button"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12S0 18.623 0 12 5.377 0 12 0zm0 2.767c5.096 0 9.233 4.137 9.233 9.233 0 5.096-4.137 9.233-9.233 9.233-5.096 0-9.233-4.137-9.233-9.233 0-5.096 4.137-9.233 9.233-9.233zM6.9 10.5h10.2c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5h-.01.01H6.9c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5h.01-.01z"></path></svg>';
+			`<svg role="img" viewBox="0 0 24 24" style="fill-rule: evenodd; clip-rule: evenodd;" class="${svgButton}"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12S0 18.623 0 12 5.377 0 12 0zm0 2.767c5.096 0 9.233 4.137 9.233 9.233 0 5.096-4.137 9.233-9.233 9.233-5.096 0-9.233-4.137-9.233-9.233 0-5.096 4.137-9.233 9.233-9.233zM6.9 10.5h10.2c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5h-.01.01H6.9c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5h.01-.01z"></path></svg>`;
 		this.remColor.style.left = '0';
 		this.remColor.style.transform = 'translate(-25%,25%)';
 		this.remColor.disabled = true;

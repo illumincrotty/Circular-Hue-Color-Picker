@@ -1,4 +1,6 @@
 dist
+distTest
+**/*.js
 example
 node_modules
 
