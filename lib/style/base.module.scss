@@ -1,0 +1,84 @@
+@mixin containerBase {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.container {
+	@include containerBase();
+}
+
+.root {
+	--primary: hsl(270, 1%, 13%);
+	--secondary: hsl(270, 7%, 24%);
+	--accent: hsl(337, 71%, 60%);
+	--secondaryAccent: hsl(46, 75%, 55%);
+	--text: hsl(53, 20%, 80%);
+	--width: 15rem;
+	--themeLightness: 0;
+
+	@media (prefers-color-scheme: light) {
+		--primary: hsl(256, 14%, 85%);
+		--secondary: hsl(253, 5%, 66%);
+		--accent: hsl(176, 44%, 50%);
+		--secondaryAccent: hsl(337, 71%, 60%);
+		--text: hsl(242, 94%, 7%);
+		--themeLightness: 100;
+	}
+
+	box-sizing: border-box;
+	height: inherit;
+	font-family: 'Space Grotesk', sans-serif;
+	display: block;
+	height: inherit;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+		font-size: 100%;
+		margin: 0;
+		padding: 0;
+		line-height: 1.15;
+		font-family: inherit;
+	}
+}
+
+.launchButton {
+	position: relative;
+	transform: translateZ(1px);
+
+	width: 100%;
+	height: 100%;
+
+	border-radius: 25%;
+	border: 0.2rem solid hsla(0, 0%, 20%, 1);
+
+	box-shadow: 0 0 0 hsla(0, 0%, 0%, 0.3);
+	background: radial-gradient(
+			circle closest-side,
+			hsla(0, 0%, 50%, 1),
+			hsla(0, 0%, 50%, 0)
+		),
+		conic-gradient(
+			hsl(0, 100%, 50%),
+			hsl(30, 100%, 50%),
+			hsl(60, 100%, 50%),
+			hsl(90, 100%, 50%),
+			hsl(120, 100%, 50%),
+			hsl(150, 100%, 50%),
+			hsl(180, 100%, 50%),
+			hsl(210, 100%, 50%),
+			hsl(240, 100%, 50%),
+			hsl(270, 100%, 50%),
+			hsl(300, 100%, 50%),
+			hsl(330, 100%, 50%),
+			hsl(360, 100%, 50%)
+		);
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			border-color: 'white';
+		}
+	}
+}

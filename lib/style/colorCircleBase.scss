@@ -1,0 +1,51 @@
+@mixin colorCircleBase {
+	--circle-color: hsl(0, 0%, 50%);
+
+	border-radius: 50%;
+	border: none;
+
+	background: transparent;
+	box-shadow: 0rem 0rem 1rem hsla(0, 0%, 0%, 0.3);
+
+	cursor: pointer;
+}
+
+@mixin disabled {
+	cursor: default;
+	fill: var(--secondary);
+	background: hsla(0, 0%, 0%, 0) !important;
+}
+
+@mixin svgButtonWrapperStyle {
+	@include colorCircleBase();
+	border: none;
+
+	background: transparent;
+	fill: var(--accent);
+
+	&:active {
+		fill: var(--secondary);
+	}
+	&:disabled {
+		@include disabled();
+	}
+	&:focus-visible {
+		fill: var(--secondaryAccent);
+		outline: none;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			fill: var(--secondaryAccent);
+		}
+		&:disabled {
+			@include disabled();
+		}
+	}
+}
+
+@mixin svgButtonBase {
+	fill: inherit;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	width: inherit;
+}

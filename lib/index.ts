@@ -1,9 +1,8 @@
 import { ColorPickerComponent } from './component';
-import { launchButton, root } from './style/base.css';
 import { State } from './utilities/stateUtilities';
-import css from '../dist/style.css';
 
-// Console.info(css);
+import styles from './style/index.scss';
+import font from './style/font.scss';
 
 class colorPicker extends HTMLElement {
 	openButton: HTMLElement;
@@ -19,39 +18,27 @@ class colorPicker extends HTMLElement {
 
 		this.shadow = this.attachShadow({ mode: 'open' });
 		this.base = document.createElement('div');
-		this.base.classList.add(`${root}`);
-		this.base.style.display = 'block';
-		this.base.style.height = 'inherit';
-		this.shadow.appendChild(this.base);
+		this.base.classList.add('root');
 
 		this.openButton = document.createElement('button');
 		this.openButton.setAttribute('aria-label', 'open color picker');
-		this.openButton.classList.add(`${launchButton}`);
+		this.openButton.classList.add('launchButton');
 	}
 
 	connectedCallback(): this {
-		const font = document.createElement('style');
-		font.type = 'text/css';
-		font.innerHTML = `@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500&display=swap');`;
-		this.prepend(font);
+		this.shadow.appendChild(this.base);
+
+		const fontElement = document.createElement('style');
+		fontElement.type = 'text/css';
+		fontElement.innerHTML = font;
+		this.prepend(fontElement);
 
 		const parent = this.base;
 
-		//
-		// const link = document.createElement("link");
-		// link.rel = "stylesheet";
-		// link.href = URL("/dist/style.css");
-		// this.shadow.appendChild(link);
-
-		//
-		const style = document.createElement('style');
-		style.type = 'text/css';
-
-		//
-		style.textContent = css;
-		//
-		// style.innerHTML = eval(' ""+font_css_ts_vanilla + base_css_ts_vanilla + cpStyle_css_ts_vanilla + range_css_ts_vanilla') as string ?? '';
-		this.shadow.appendChild(style);
+		const styleElement = document.createElement('style');
+		styleElement.type = 'text/css';
+		styleElement.innerHTML = styles;
+		this.shadow.prepend(styleElement);
 		if (this.standalone) {
 			this.pickerElement = new ColorPickerComponent(parent, this.state, {
 				standAlone: true,
@@ -80,7 +67,7 @@ class colorPicker extends HTMLElement {
 	}
 
 	clickEventListener = (e: MouseEvent | TouchEvent): void => {
-		console.log(e.target);
+		console.debug(e.target);
 		if (e.target instanceof HTMLElement) {
 			if (e.target === this && !this.standalone) {
 				this.pickerElement.hidden = false;
@@ -103,7 +90,7 @@ class colorPicker extends HTMLElement {
 			return;
 		}
 
-		console.log(name);
+		console.debug(name);
 		switch (name) {
 			case 'width':
 				this.pickerElement.width = newValue;

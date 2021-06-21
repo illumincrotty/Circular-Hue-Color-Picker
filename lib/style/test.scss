@@ -1,0 +1,21 @@
+@mixin hoverAndFocus {
+	color: var(--accent);
+	background-color: var(--secondary);
+	border-color: var(--accent);
+}
+testingButtonStyle {
+	width: 100%;
+	color: var(--text);
+	background-color: var(--primary);
+	border-color: var(--text);
+	border-radius: '1em';
+	&:hover,
+	&:focus {
+		color: var(--accent);
+		background-color: var(--secondary);
+		border-color: var(--accent);
+	}
+	&:active {
+		border-color: var(--secondaryAccent);
+	}
+}

@@ -6,20 +6,17 @@ import { TextInput } from './text';
 import { ColorCircle } from './colorCircles';
 import type { changeSource } from './utilities/colorUtilities';
 
-import { appear, componentStyle } from './style/cpStyle.css';
-import { testingButton } from './style/test.css';
-import { container, theme } from './style/base.css';
 export { ColorPickerComponent };
 
 type pickerOptions = {
 	standAlone?: boolean;
 	width?: string;
 	maxColors?: string;
+	debug?: boolean;
 };
 
 class ColorPickerComponent implements subComponents {
 	static componentCount = -1;
-	static debug = false;
 
 	name: changeSource = 'component';
 	id: number;
@@ -28,14 +25,11 @@ class ColorPickerComponent implements subComponents {
 	private visible = false;
 
 	get width(): string {
-		return this.element.style.getPropertyValue(`${theme.width}`);
+		return this.element.style.getPropertyValue('--width');
 	}
 
 	set width(input: string) {
-		this.element.style.setProperty(
-			`${theme.width.slice(4, -1)}`,
-			input ?? '15rem'
-		);
+		this.element.style.setProperty('--width', input ?? '15rem');
 		this.resizeHandler();
 	}
 
@@ -46,15 +40,14 @@ class ColorPickerComponent implements subComponents {
 	set hidden(input: boolean) {
 		if (input) {
 			this.visible = false;
-			this.element.classList.remove(`${appear}`);
+			this.element.classList.remove('appear');
 		}
 
 		if (!input) {
 			this.visible = true;
-			this.element.classList.add(`${appear}`);
+			this.element.classList.add('appear');
 		}
 	}
-
 
 	constructor(
 		parentElement: HTMLElement | ShadowRoot,
@@ -66,11 +59,8 @@ class ColorPickerComponent implements subComponents {
 		this.id = ColorPickerComponent.componentCount;
 
 		this.element = document.createElement('div');
-		this.element.classList.add(
-			`${container}`,
-			`${componentStyle}`
-		);
-
+		this.element.classList.add('container', 'componentStyle');
+		this.element.tabIndex = -1;
 		this.width = options?.width ?? '15rem';
 
 		if (options?.standAlone ?? true) {
@@ -88,21 +78,21 @@ class ColorPickerComponent implements subComponents {
 
 			// #region testing
 			// add temporary testing components
-			if (ColorPickerComponent.debug) {
+			if (options?.debug) {
 				const addColorButton = document.createElement('button');
-				addColorButton.classList.add(`${testingButton}`);
+				addColorButton.classList.add('testingButtonStyle');
 				addColorButton.textContent = 'Add';
 				addColorButton.addEventListener('click', () => {
 					state.addColor();
 				});
 
 				const remColorButton = document.createElement('button');
-				remColorButton.classList.add(`${testingButton}`);
+				remColorButton.classList.add('testingButtonStyle');
 				remColorButton.textContent = 'Remove';
 				remColorButton.addEventListener('click', () => state.removeColor());
 
 				const stateLog = document.createElement('button');
-				stateLog.classList.add(`${testingButton}`);
+				stateLog.classList.add('testingButtonStyle');
 				stateLog.textContent = 'Log State';
 				stateLog.addEventListener('mousedown', this.logState);
 

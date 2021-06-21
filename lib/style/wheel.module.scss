@@ -1,0 +1,104 @@
+@use 'colorCircleBase';
+
+.wheelStyle {
+	--wheelLightness: 50%;
+	position: relative;
+
+	width: calc(var(--width) * 0.9);
+	height: calc(var(--width) * 0.9);
+
+	border-radius: 50%;
+	border: calc(var(--width) * 0.9 * 0.05) solid var(--secondary);
+
+	box-shadow: 0rem 0rem 1rem hsla(0, 0%, 0%, 0.3);
+	background: radial-gradient(
+			circle closest-side,
+			hsla(0, 0%, var(--wheelLightness), 100%),
+			hsla(0, 0%, 50%, 0%)
+		),
+		conic-gradient(
+			hsl(0, 100%, var(--wheelLightness)),
+			hsl(30, 100%, var(--wheelLightness)),
+			hsl(60, 100%, var(--wheelLightness)),
+			hsl(90, 100%, var(--wheelLightness)),
+			hsl(120, 100%, var(--wheelLightness)),
+			hsl(150, 100%, var(--wheelLightness)),
+			hsl(180, 100%, var(--wheelLightness)),
+			hsl(210, 100%, var(--wheelLightness)),
+			hsl(240, 100%, var(--wheelLightness)),
+			hsl(270, 100%, var(--wheelLightness)),
+			hsl(300, 100%, var(--wheelLightness)),
+			hsl(330, 100%, var(--wheelLightness)),
+			hsl(360, 100%, var(--wheelLightness))
+		);
+
+	filter: brightness(100%);
+	cursor: pointer;
+}
+
+@mixin wheelButtonStyle {
+	@include colorCircleBase.svgButtonWrapperStyle;
+
+	position: absolute;
+	width: calc(var(--width) * 0.1);
+	height: calc(var(--width) * 0.1);
+	bottom: 0;
+}
+
+.leftWheelButtonStyle {
+	@include wheelButtonStyle();
+	right: 0;
+	transform: translate(25%, 25%);
+}
+
+.rightWheelButtonStyle {
+	@include wheelButtonStyle();
+	left: 0;
+	transform: translate(-25%, 25%);
+}
+
+.handleStyle {
+	--handleXOffset: 0;
+	--handleYOffset: 0;
+	--scaleFactor: 1;
+	--borderColor: var(--secondary);
+	--colorPickerHandleSize: calc(var(--width) * 0.9 * 0.15);
+
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform-origin: center;
+	transform: translate(
+			calc(var(--handleXOffset) * 1px + -50%),
+			calc(var(--handleYOffset) * 1px + -50%)
+		)
+		scale(var(--scaleFactor));
+
+	width: var(--colorPickerHandleSize);
+	height: var(--colorPickerHandleSize);
+
+	border-radius: 50%;
+	border: calc(var(--colorPickerHandleSize) * 0.1) solid var(--borderColor);
+
+	background: var(--selectedColor);
+	box-shadow: 0rem 0rem 0.15rem hsla(0, 0%, 0%, 0.3);
+
+	cursor: grab;
+
+	&:active {
+		cursor: grabbing;
+	}
+	&:focus-visible {
+		outline: none;
+	}
+	&:focus-visible::after {
+		display: block;
+		border-radius: 50%;
+		box-sizing: border-box;
+		content: '';
+		transform: translate(-10%, -10%) scale(var(--scaleFactor));
+		width: var(--colorPickerHandleSize);
+		height: var(--colorPickerHandleSize);
+		border: calc(var(--colorPickerHandleSize) * 0.1) solid var(--secondaryAccent);
+	}
+}

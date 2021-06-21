@@ -1,5 +1,3 @@
-import { theme } from './style/base.css';
-import { handleStyle } from './style/cpStyle.css';
 import type {
 	hsl_color_generic,
 	hsl_color,
@@ -42,13 +40,13 @@ class Handle implements subComponents {
 	constructor(parent: HTMLElement, idNumber: number, private state: State) {
 		// Create element and add its class
 		this.handle = document.createElement('div');
-		this.handle.classList.add(`${handleStyle}`);
-		// This.handle.tabIndex = 0;
+		this.handle.classList.add('handleStyle');
+		this.handle.tabIndex = 0;
 		this.id = idNumber;
 		this.select();
 
 		// Add self to dom
-		parent.appendChild(this.handle);
+		parent.prepend(this.handle);
 		this.updateColor(this.color);
 	}
 
@@ -78,7 +76,7 @@ class Handle implements subComponents {
 	};
 
 	logState(): void {
-		console.log(this);
+		console.info(this);
 	}
 
 	setDimensions(parent: HTMLElement): void {
@@ -96,8 +94,7 @@ class Handle implements subComponents {
 
 		this.dimensions.offset = wheelDimensions.width / 2;
 		this.dimensions.functionalRad =
-				this.dimensions.offset - wheelBorder - handleRadius + handleBorder ??
-				0;
+			this.dimensions.offset - wheelBorder - handleRadius + handleBorder ?? 0;
 
 		this.dimensions.touchOffsetX = wheelDimensions.x;
 		this.dimensions.touchOffsetY = wheelDimensions.y;
@@ -170,16 +167,16 @@ class Handle implements subComponents {
 	// #endregion event listener implementation
 
 	select = (): void => {
-		console.log('selecting');
-		console.log(this);
+		console.debug('selecting');
+		console.debug(this);
 		this.handle.focus();
 		this.handle.style.setProperty('--scaleFactor', '1.2');
-		this.handle.style.setProperty('--borderColor', `${theme.text}`);
+		this.handle.style.setProperty('--borderColor', 'var(--text)');
 	};
 
 	deselect = (): void => {
-		console.log('deselecting');
-		console.log(this);
+		console.debug('deselecting');
+		console.debug(this);
 		this.handle.style.removeProperty('--scale');
 		this.handle.style.setProperty('--scaleFactor', '1');
 		this.handle.style.removeProperty('--borderColor');

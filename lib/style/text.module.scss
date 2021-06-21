@@ -1,0 +1,49 @@
+@use 'colorCircleBase';
+
+.textWrapperStyle {
+	text-align: center;
+	width: 100%;
+}
+
+.numInputStyle {
+	display: inline-block;
+
+	width: 3ch;
+	margin-left: 0.25ch;
+	margin-right: 0.25ch;
+
+	border: none;
+
+	background-color: transparent;
+
+	text-align: right;
+	color: var(--text);
+	cursor: text;
+	font-size: 93%;
+
+	&:hover {
+		outline: 1px solid var(--accent);
+		background-color: var(--secondary);
+	}
+	&:active,
+	&:focus {
+		outline: 2px solid var(--secondaryAccent);
+		background-color: var(--secondary);
+	}
+}
+
+.copyButtonStyle {
+	@include colorCircleBase.svgButtonWrapperStyle();
+	width: 1.1em;
+	height: 1.1em;
+	margin-left: 0.5em;
+
+	cursor: copy;
+	vertical-align: middle;
+	box-shadow: none;
+}
+
+.copySvgStyle {
+	height: inherit;
+	width: inherit;
+}

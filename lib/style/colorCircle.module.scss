@@ -1,0 +1,34 @@
+@use 'base.module';
+@use 'colorCircleBase';
+
+.circleContainerStyle {
+	@include base.containerBase;
+	flex-direction: row;
+	width: 100%;
+	flex-wrap: wrap;
+}
+
+.colorCircleDynamicStyle {
+	@include colorCircleBase.svgButtonWrapperStyle;
+	--circle-color: hsl(0, 0%, 50%);
+	--circleSize: calc(var(--width) * 0.15);
+
+	width: var(--circleSize);
+	height: var(--circleSize);
+
+	background-color: var(--circle-color);
+	border: calc(var(--circleSize) * 0.1) solid var(--secondary);
+
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			fill: var(--accent);
+		}
+	}
+
+	&:focus-visible {
+		outline: 0.4rem solid var(--secondaryAccent);
+	}
+	&:focus {
+		border-color: var(--accent);
+	}
+}

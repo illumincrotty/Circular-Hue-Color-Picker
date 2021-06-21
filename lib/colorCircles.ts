@@ -1,5 +1,3 @@
-import { colorCircleBase, colorCircleDynamicStyle } from './style/cpStyle.css';
-import { container, theme } from './style/base.css';
 import type { changeSource, colorChange } from './utilities/colorUtilities';
 import { hslColorToCssString } from './utilities/colorUtilities';
 import type { State, subComponents } from './utilities/stateUtilities';
@@ -13,10 +11,7 @@ class ColorCircle implements subComponents {
 
 	constructor(parentElement: HTMLElement, private state: State) {
 		this.wrapper = document.createElement('div');
-		this.wrapper.classList.add(`${container}`);
-		this.wrapper.style.flexDirection = 'row';
-		this.wrapper.style.width = '100%';
-		this.wrapper.style.flexWrap = 'wrap';
+		this.wrapper.classList.add('circleContainerStyle');
 
 		this.addClickEventDelegation();
 
@@ -39,7 +34,7 @@ class ColorCircle implements subComponents {
 
 	private readonly addCircle = () => {
 		const newCircle = document.createElement('button');
-		newCircle.classList.add(`${colorCircleBase}`, `${colorCircleDynamicStyle}`);
+		newCircle.classList.add('colorCircleDynamicStyle');
 		this.circleList.push(newCircle);
 		this.wrapper.append(newCircle);
 		return;
@@ -56,7 +51,7 @@ class ColorCircle implements subComponents {
 
 	private readonly deselect = (index: number) => {
 		if (index >= 0 && index < this.circleList.length) {
-			this.circleList[index].style.borderColor = `${theme.secondary}`;
+			this.circleList[index].style.borderColor = 'var(--secondary)';
 		}
 
 		return;
@@ -64,7 +59,7 @@ class ColorCircle implements subComponents {
 
 	private readonly select = (index: number) => {
 		this.selected = index;
-		this.circleList[this.selected].style.borderColor = `${theme.text}`;
+		this.circleList[this.selected].style.borderColor = 'var(--text)';
 	};
 
 	colorChangeHandler = (input: colorChange): void => {

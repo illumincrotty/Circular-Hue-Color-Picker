@@ -1,0 +1,25 @@
+// $primary
+// $secondary
+// $accent
+// $secondaryAccent
+// $text
+// $width
+// $themeLightness
+
+$primary: #{--primary};
+$secondary: #{--secondary};
+$accent: #{--accent};
+$secondaryAccent: #{--secondaryAccent};
+$text: #{--text};
+$width: #{--width};
+$themeLightness: #{--themeLightness};
+
+:export {
+	primary: $primary;
+	secondary: $secondary;
+	accent: $accent;
+	secondaryAccent: $secondaryAccent;
+	text: $text;
+	width: $width;
+	themeLightness: $themeLightness;
+}

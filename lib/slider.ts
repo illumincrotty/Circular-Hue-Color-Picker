@@ -1,12 +1,3 @@
-import { range } from './style/cpStyle.css';
-import { container } from './style/base.css';
-import {
-	hueSlider,
-	lightnessSlider,
-	saturationSlider,
-	sliderStyleBase,
-	sliderWrapper,
-} from './style/range.css';
 import type {
 	changeSource,
 	hsl_color_generic,
@@ -22,7 +13,7 @@ class Slider implements subComponents {
 	ranges!: hsl_color_generic<Range>;
 	constructor(parentElement: HTMLElement, id: number, state: State) {
 		this.sliderWrapper = document.createElement('div');
-		this.sliderWrapper.classList.add(`${container}`, `${sliderWrapper}`);
+		this.sliderWrapper.classList.add('sliderWrapperStyle');
 		parentElement.appendChild(this.sliderWrapper);
 		state.subscribe(this);
 		this.createRanges(id, state);
@@ -50,43 +41,25 @@ class Slider implements subComponents {
 			}),
 		};
 
-		this.ranges.hue.input.classList.add(`${hueSlider}`);
-		this.ranges.saturation.input.classList.add(`${saturationSlider}`);
-		this.ranges.lightness.input.classList.add(`${lightnessSlider}`);
+		this.ranges.hue.input.classList.add('hueSliderStyle');
+		this.ranges.saturation.input.classList.add('saturationSliderStyle');
+		this.ranges.lightness.input.classList.add('lightnessSliderStyle');
 	};
 
 	colorChangeHandler(change: colorChange): void {
 		if (change.source !== 'slider') {
+			this.sliderWrapper.style.setProperty('--hue', `${change.color.hue}`);
+			this.sliderWrapper.style.setProperty(
+				'--saturation',
+				`${change.color.saturation}%`
+			);
+			this.sliderWrapper.style.setProperty(
+				'--lightness',
+				`${change.color.lightness}%`
+			);
 			this.ranges.hue.update(change.color.hue);
-			this.ranges.saturation.input.style.setProperty(
-				'--hue',
-				`${change.color.hue}`
-			);
-			this.ranges.lightness.input.style.setProperty(
-				'--hue',
-				`${change.color.hue}`
-			);
-
 			this.ranges.saturation.update(change.color.saturation);
-			this.ranges.hue.input.style.setProperty(
-				'--saturation',
-				`${change.color.saturation}%`
-			);
-			this.ranges.lightness.input.style.setProperty(
-				'--saturation',
-				`${change.color.saturation}%`
-			);
-
 			this.ranges.lightness.update(change.color.lightness);
-			this.ranges.hue.input.style.setProperty(
-				'--lightness',
-				`${change.color.lightness}%`
-			);
-			this.ranges.saturation.input.style.setProperty(
-				'--lightness',
-				`${change.color.lightness}%`
-			);
-			return;
 		}
 	}
 
@@ -117,7 +90,7 @@ class Range {
 		this.default = options.default;
 
 		const wrapper = document.createElement('div');
-		wrapper.classList.add(`${range}`);
+		wrapper.classList.add('rangeStyle');
 		const label = document.createElement('label');
 		const capitalLabel = options.name[0].toUpperCase() + options.name.slice(1);
 		label.textContent = capitalLabel;
@@ -127,13 +100,10 @@ class Range {
 
 		this.input = document.createElement('input');
 		this.input.setAttribute('type', 'range');
-		this.input.classList.add(`${sliderStyleBase}`);
 		this.input.setAttribute('min', `${options.min}`);
 		this.input.setAttribute('max', `${options.max}`);
 		this.input.setAttribute('value', `${options.default}`);
 		this.input.id = `colorPicker-${capitalLabel}-slider-${id}`;
-		this.input.style.width = '100%';
-		this.input.classList.add('colorPicker-slider');
 
 		this.input.addEventListener('input', () => {
 			state.color = {

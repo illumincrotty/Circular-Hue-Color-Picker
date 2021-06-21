@@ -1,5 +1,4 @@
 import { Handle } from './handle';
-import { colorCircleBase, colorWheelstyle, svgButton, svgButtonWrapper, wheelButton, wheelLightness } from './style/cpStyle.css';
 import type { changeSource, colorChange } from './utilities/colorUtilities';
 import type { State, subComponents } from './utilities/stateUtilities';
 import { throttle } from './utilities/timingUtilities';
@@ -22,7 +21,7 @@ class ColorWheel implements subComponents {
 
 	constructor(parent: HTMLElement, private state: State) {
 		this.wheel = document.createElement('div');
-		this.wheel.classList.add(`${colorWheelstyle}`);
+		this.wheel.classList.add('wheelStyle');
 
 		state.subscribe(this);
 
@@ -53,25 +52,12 @@ class ColorWheel implements subComponents {
 
 	addAndRemoveColorButton = (): void => {
 		this.addColor = document.createElement('button');
-		this.addColor.innerHTML =
-			`<svg role="img" viewBox="0 0 24 24" style="fill-rule: evenodd; clip-rule: evenodd;" class="${svgButton}"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12S0 18.623 0 12 5.377 0 12 0zm0 2.767c5.096 0 9.233 4.137 9.233 9.233 0 5.096-4.137 9.233-9.233 9.233-5.096 0-9.233-4.137-9.233-9.233 0-5.096 4.137-9.233 9.233-9.233z"></path><path d="M10.5 10.5V6.9a1.5 1.5 0 013 0v.01-.01 3.6h3.6a1.5 1.5 0 010 3h-.01.01-3.6v3.6a1.5 1.5 0 01-3 0v-.01.01-3.6H6.9a1.5 1.5 0 010-3h.01-.01 3.6z"></path></svg>`;
-		this.addColor.classList.add(
-			`${colorCircleBase}`,
-			`${svgButtonWrapper}`,
-			`${wheelButton}`
-		);
-		this.addColor.style.right = '0';
+		this.addColor.innerHTML = `<svg role="img" viewBox="0 0 24 24" style="fill-rule: evenodd; clip-rule: evenodd;"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12S0 18.623 0 12 5.377 0 12 0zm0 2.767c5.096 0 9.233 4.137 9.233 9.233 0 5.096-4.137 9.233-9.233 9.233-5.096 0-9.233-4.137-9.233-9.233 0-5.096 4.137-9.233 9.233-9.233z"></path><path d="M10.5 10.5V6.9a1.5 1.5 0 013 0v.01-.01 3.6h3.6a1.5 1.5 0 010 3h-.01.01-3.6v3.6a1.5 1.5 0 01-3 0v-.01.01-3.6H6.9a1.5 1.5 0 010-3h.01-.01 3.6z"></path></svg>`;
+		this.addColor.classList.add('leftWheelButtonStyle');
 
 		this.remColor = document.createElement('button');
-		this.remColor.classList.add(
-			`${colorCircleBase}`,
-			`${svgButtonWrapper}`,
-			`${wheelButton}`
-		);
-		this.remColor.innerHTML =
-			`<svg role="img" viewBox="0 0 24 24" style="fill-rule: evenodd; clip-rule: evenodd;" class="${svgButton}"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12S0 18.623 0 12 5.377 0 12 0zm0 2.767c5.096 0 9.233 4.137 9.233 9.233 0 5.096-4.137 9.233-9.233 9.233-5.096 0-9.233-4.137-9.233-9.233 0-5.096 4.137-9.233 9.233-9.233zM6.9 10.5h10.2c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5h-.01.01H6.9c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5h.01-.01z"></path></svg>`;
-		this.remColor.style.left = '0';
-		this.remColor.style.transform = 'translate(-25%,25%)';
+		this.remColor.classList.add('rightWheelButtonStyle');
+		this.remColor.innerHTML = `<svg role="img" viewBox="0 0 24 24" style="fill-rule: evenodd; clip-rule: evenodd;"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12S0 18.623 0 12 5.377 0 12 0zm0 2.767c5.096 0 9.233 4.137 9.233 9.233 0 5.096-4.137 9.233-9.233 9.233-5.096 0-9.233-4.137-9.233-9.233 0-5.096 4.137-9.233 9.233-9.233zM6.9 10.5h10.2c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5h-.01.01H6.9c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5h.01-.01z"></path></svg>`;
 		this.remColor.disabled = true;
 
 		this.wheel.appendChild(this.remColor);
@@ -215,7 +201,7 @@ class ColorWheel implements subComponents {
 	}
 
 	deselectHandle = (index: number): void => {
-		console.log(`deselecting handle #${index}`);
+		console.debug(`deselecting handle #${index}`);
 		if (this.children[this.selectedHandle] !== undefined) {
 			this.children[index].deselect();
 
@@ -226,7 +212,7 @@ class ColorWheel implements subComponents {
 	};
 
 	selectHandle = (input: number): void => {
-		console.log(`selecting handle #${input}`);
+		console.debug(`selecting handle #${input}`);
 		this.children[input].select();
 		this.children[input].handle.style.zIndex = (
 			this.children.length + 5
@@ -256,14 +242,12 @@ class ColorWheel implements subComponents {
 
 	colorChangeHandler(change: colorChange): void {
 		if (this.selectedHandle >= 0) {
-			this.children[this.selectedHandle].setDimensions(
-				this.wheel
-			);
+			this.children[this.selectedHandle].setDimensions(this.wheel);
 		}
 
 		if (change?.source !== 'wheel') {
 			this.wheel.style.setProperty(
-				`${wheelLightness.slice(4, -1)}`,
+				'--wheelLightness',
 				`${change.color.lightness}%`
 			);
 

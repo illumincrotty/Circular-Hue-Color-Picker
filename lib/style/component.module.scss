@@ -1,0 +1,39 @@
+.colorCircleBase {
+    --circle-color: hsl(0, 0%, 50%);
+
+    transform: translateZ(1px);
+
+    border-radius: 50%;
+    border: none;
+
+    background: transparent;
+    box-shadow: 0rem 0rem 1rem hsla(0, 0%, 0%, 0.3);
+
+    cursor: pointer;
+}
+
+.componentStyle {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: min-content;
+    padding: 1rem;
+
+    border-radius: calc(var(--width) * 0.1);
+
+    color: var(--text);
+    background-color: var(--primary);
+    box-shadow: 0rem 0rem 1.5rem -0.5rem hsl(270, 1%, 13%),
+        inset 0 0 calc(var(--width) / 10) calc(var(--width) / 100) hsla(0, 0%, calc(var(--themeLightness) * 1%), 0.1);
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 300ms, opacity 300ms;
+
+    gap: calc(var(--width) / 30);
+}
+
+.appear {
+    visibility: unset;
+    opacity: 1;
+}

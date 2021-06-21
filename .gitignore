@@ -13,3 +13,5 @@ dist-ssr
 
 # Local History for Visual Studio Code
 .history/
+
+.ignore

@@ -32,6 +32,6 @@
 		"skipLibCheck": true /* Skip type checking of declaration files. */,
 		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
 	},
-	"include": ["lib", "cssBuild/buildCSS.ts", "cssBuild/utilities"]
+	"include": ["lib"]
 	// "exclude": ["**/*.css.ts"]
 }

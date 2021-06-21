@@ -1,9 +1,3 @@
-import { copyButton,
-	numInput,
-	svgButton,
-	svgButtonWrapper,
-	textWrap
-} from './style/cpStyle.css';
 import type {
 	changeSource,
 	colorChange,
@@ -32,7 +26,7 @@ class TextInput implements subComponents {
 		state.subscribe(this);
 
 		this.fullSpan = document.createElement('div');
-		this.fullSpan.classList.add(`${textWrap}`);
+		this.fullSpan.classList.add('textWrapperStyle');
 
 		this.numberInputs = {
 			hue: this.createNumberInput({
@@ -92,7 +86,7 @@ class TextInput implements subComponents {
 
 	createCopyButton(): void {
 		this.copy = document.createElement('button');
-		this.copy.classList.add(`${svgButtonWrapper}`, `${copyButton}`);
+		this.copy.classList.add('copyButtonStyle');
 
 		this.copy.addEventListener('click', () => {
 			navigator.clipboard
@@ -107,9 +101,8 @@ class TextInput implements subComponents {
 
 		this.copy.append(this.colorText);
 
-		this.copy.innerHTML =
-			`<svg role="img" viewBox="2.5 0 20 24" style="fill-rule: evenodd; clip-rule: evenodd;" class="${svgButton}"><path d="M6.8 19v3.1c0 1 .9 1.9 1.9 1.9h11.7c1 0 1.9-.8 1.9-1.9V7c0-1-.8-1.9-1.9-1.9h-2.3V1.9c0-1-.9-1.9-1.9-1.9H4.5c-1 0-1.9.8-1.9 1.9V17c0 1 .8 1.9 1.9 1.9h2.3zM20.1 7.8H9v13.4h11V7.8zM15.8 5V2.8h-11v13.4h2V7c0-1 .9-1.9 1.9-1.9h7.1z"></path></svg>`;
-
+		this.copy.innerHTML = `<svg role="img" viewBox="2.5 0 20 24" style="fill-rule: evenodd; clip-rule: evenodd;" ><path d="M6.8 19v3.1c0 1 .9 1.9 1.9 1.9h11.7c1 0 1.9-.8 1.9-1.9V7c0-1-.8-1.9-1.9-1.9h-2.3V1.9c0-1-.9-1.9-1.9-1.9H4.5c-1 0-1.9.8-1.9 1.9V17c0 1 .8 1.9 1.9 1.9h2.3zM20.1 7.8H9v13.4h11V7.8zM15.8 5V2.8h-11v13.4h2V7c0-1 .9-1.9 1.9-1.9h7.1z"></path></svg>`;
+		this.copy.firstElementChild?.classList.add('copySvgStyle');
 		this.fullSpan.append(this.copy);
 	}
 
@@ -122,13 +115,13 @@ class TextInput implements subComponents {
 		input.setAttribute('max', `${options?.max ?? 100}`);
 		input.setAttribute('step', `${options?.step ?? 1}`);
 		input.setAttribute('placeholder', `${options?.placeholder ?? 50}`);
-		input.classList.add(`${numInput}`);
+		input.classList.add('numInputStyle');
 
 		return input;
 	};
 
 	logState(): void {
-		console.log(this);
+		console.info(this);
 	}
 
 	colorChangeHandler(input: colorChange): void {
