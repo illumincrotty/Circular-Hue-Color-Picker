@@ -2,19 +2,17 @@
 	"name": "dead-simple-color-picker",
 	"version": "0.0.1",
 	"description": "A dependency free circular hue color picker",
-	"main": "dist/color-picker.es.js",
 	"files": [
-		"dist/dead-simple-color-picker.es.js",
-		"dist/dead-simple-color-picker.umd.js",
-		"dist/types/index.d.ts",
-		"README.md",
-		"logo.png"
+		"./dist/dead-simple-color-picker.es.js",
+		"./dist/dead-simple-color-picker.umd.js",
+		"./dist/types/index.d.ts",
+		"./README.md",
+		"./logo.png"
 	],
 	"exports": {
 		"import": "./dist/dead-simple-color-picker.es.js",
 		"require": "./dist/dead-simple-color-picker.umd.js"
 	},
-	"readme": "README.md",
 	"typings": "/dist/types/index.d.ts",
 	"keywords": [
 		"typescript",
